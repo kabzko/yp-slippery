@@ -21,7 +21,7 @@ export type Employee = {
   zip_code?: number;
   foreign_address?: string;
   foreign_address_zip?: number;
-  rdo_code?: number; 
+  rdo_code?: string; 
   contact_num?: string;
   contact_person?: string;
   relationship?: string;

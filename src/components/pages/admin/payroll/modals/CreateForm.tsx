@@ -1,8 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { DailyLogsContext, LogsContext } from "../../../../contexts";
-import useAddLog from "../hooks/useAddlog";
+import useAddLog from "../hooks/useAddLog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { nanoid } from "nanoid";
 import { useForm, Controller } from "react-hook-form";
 import MultiSelect from "../../payroll/MultiSelect";
 import { getEmployees } from "../helpers/api";
@@ -188,7 +187,6 @@ export default function CreateFormModal({ isOpen, onClose }: ModalProps) {
                             items={employeeNames}
                             itemType="employee"
                             setFieldValue={setValue}
-                            errors={[]}
                           />
                         </div>
                         <div>

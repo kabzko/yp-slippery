@@ -3,15 +3,6 @@ import toast from "react-hot-toast";
 import React, { FC, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomToast from "@/components/Toast/CustomToast";
-import { deleteLocationData } from '@/components/pages/self-service/location/hooks/useLocationQueries';
-import { deleteDepartmentData } from '@/components/pages/self-service/location/hooks/useDepartmentQueries';
-import { deletePositionData } from '@/components/pages/self-service/location/hooks/usePositionsQueries';
-import { deleteEmploymentTypeData } from '@/components/pages/self-service/location/hooks/useEmploymentTypeQueries';
-import { deleteScheduleData } from '@/components/pages/self-service/schedule/hooks/useScheduleQueries';
-import { deleteDivisionData } from '@/components/pages/self-service/division/hooks/useDivisionQuery';
-import { deleteSectionData } from '@/components/pages/self-service/section/hooks/useSectionsQueries';
-import { deleteUnitData } from '@/components/pages/self-service/Unit/hooks/useUnitQueries';
-import { deleteSubUnitData } from '@/components/pages/self-service/subunit/hooks/useSubUnitQueries';
 
 
 interface ModalProps {
@@ -45,61 +36,6 @@ const DeleteModal: FC<ModalProps> = ({ isOpen, onClose, selectedData, selectedRo
     });
   };
 
-  const mutationConfigs = {
-    locations: {
-      mutationFn: deleteLocationData,
-      queryKey: ["locationData"]
-    },
-    departments: {
-      mutationFn: deleteDepartmentData,
-      queryKey: ["departmentData"]
-    },
-    positions: {
-      mutationFn: deletePositionData,
-      queryKey: ['positionsData']
-    },
-    employmenttypes: {
-      mutationFn: deleteEmploymentTypeData,
-      queryKey: ['employementTypesData']
-    },
-    schedule: {
-      mutationFn: deleteScheduleData,
-      queryKey: ['schedulesData']
-    },
-    divisions: {
-      mutationFn: deleteDivisionData,
-      queryKey: ['divisionData']
-    },
-    sections: {
-      mutationFn: deleteSectionData,
-      queryKey: ['sectionsData']
-    },
-    units: {
-      mutationFn: deleteUnitData,
-      queryKey: ['unitsData']
-    },
-    subUnits: {
-      mutationFn: deleteSubUnitData,
-      queryKey: ['subUnitsData']
-    }
-  };
-
-  const mutations = Object.fromEntries(
-    Object.entries(mutationConfigs).map(([property, config]) => [
-      property,
-      useMutation({
-        mutationFn: config.mutationFn,
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: config.queryKey });
-        },
-        // throwOnError: true,
-        onError: (error: any) => {
-          showToast(error.message, "error");
-        },
-      }),
-    ])
-  );
-
   const handleAccept = async () => {
     if (!selectedData) {
       return;
@@ -109,7 +45,6 @@ const DeleteModal: FC<ModalProps> = ({ isOpen, onClose, selectedData, selectedRo
     console.log(dataToProcess)
     const deletionPromises = dataToProcess.map((data: any) => {
       const dataSource = data.dataSource;
-      return mutations[dataSource].mutateAsync(data.id);
     });
 
     Promise.all(deletionPromises)

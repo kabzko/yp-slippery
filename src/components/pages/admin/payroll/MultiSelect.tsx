@@ -18,11 +18,11 @@ interface DropdownMenuProps {
 
 interface MultiSelectProps {
   items: string[];
-  setFieldValue: (fieldName: string, value: string[]) => void;
+  setFieldValue: any;
   itemType: string;
   initialSelected?: string[];
   selected: string[];
-  setSelected: React.Dispatch<React.SetStateAction<any>>;
+  setSelected: any;
 }
 
 const Tag = ({ tag, removeTag }: TagProps) => (

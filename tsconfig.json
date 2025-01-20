@@ -2,6 +2,7 @@
     "compilerOptions": {
       "target": "es5",
       "lib": [
+        "es2022",
         "dom",
         "dom.iterable",
       ],
@@ -25,7 +26,8 @@
         "@/*": [
           "./src/*"
         ]
-      }
+      },
+      "baseUrl": "."
     },
     "include": [
       "**/*.ts",
