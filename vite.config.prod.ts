@@ -1,26 +1,33 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
 
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
-  mode: 'production', // Same as `mode: 'production'`
+  mode: 'production',
   build: {
-    sourcemap: true, // Equivalent to `devtool: 'source-map'`
-    outDir: path.resolve(__dirname, './dist'), // Output directory
-    minify: 'terser', // Enable terser for JS minification
-    cssMinify: true, // Enable CSS minification
+    sourcemap: true,
+    outDir: path.resolve(__dirname, '../static/slippery-ui'),
+    minify: 'terser',
+    cssMinify: true,
     terserOptions: {
       compress: {
-        drop_console: true, // Remove console.log statements
-        drop_debugger: true // Remove debugger statements
-      }
+        drop_console: true,
+        drop_debugger: true,
+      },
     },
     rollupOptions: {
-      input: path.resolve(__dirname, './src/main.tsx'), // Entry file
+      input: path.resolve(__dirname, './src/main.tsx'),
       output: {
-        entryFileNames: 'bundle_v2.js', // Output file name
+        entryFileNames: 'js/bundle_v2.js',
+        chunkFileNames: 'js/chunks/[name]-[hash].js',
+        assetFileNames: 'css/main.css',
+        manualChunks(id) {
+          // Split node_modules into a separate vendor chunk
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
       },
     },
   },
@@ -31,5 +38,9 @@ export default defineConfig({
       uuid: 'uuid/dist/esm-browser/index.js',
     },
   },
-})
-
+  server: {
+    hmr: {
+      overlay: false,
+    }
+  },
+});
