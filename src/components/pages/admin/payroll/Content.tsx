@@ -6,8 +6,7 @@ import LogWrapper from './LogContext';
 
 export default function Content() {
   return (
-    <>
-      <div className="h-screen text-sm bg-slate-50">
+    <div className="h-screen text-sm bg-slate-50">
         <DailyLogsWrapper>
           <Header /> 
           <LogWrapper> 
@@ -15,7 +14,6 @@ export default function Content() {
             <Footer />
           </LogWrapper>
         </DailyLogsWrapper>
-      </div>
-    </>
+    </div>
   );
 }

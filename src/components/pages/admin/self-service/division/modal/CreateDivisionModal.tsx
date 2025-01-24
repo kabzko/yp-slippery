@@ -2,7 +2,7 @@ import { FC } from "react";
 import useAddDivision from "../hooks/useAddDivision";
 import { useForm, Controller } from "react-hook-form";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import useGetDivisionData from "../hooks/useGetDivisionData";
 
 interface ModalProps {

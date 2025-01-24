@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Edit, Delete } from "@mui/icons-material";
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { MdEdit, MdDelete } from "react-icons/md";
 import { DailyLogsContext, LogsContext } from "../../../contexts";
 import { DeleteTooltip, EditTooltip } from '../timekeeper/Tooltip';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import DeleteModal from "./modals/DeleteModal";
 import EditFormModal from "./modals/EditForm";
 
@@ -34,7 +34,7 @@ const ActionsTD = ({ log, setSelectedLog, setEditFormState, setRemoveModalState 
           <button disabled={selectedRows.length > 1} onClick={() => { handleUpdate(log) }}
             className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 disabled:outline-black disabled:bg-gray-300`}>
             <div className="flex justify-center items-center">
-              <Edit />
+              <MdEdit className="w-4 h-4" />
             </div>
           </button>
           <EditTooltip />
@@ -48,7 +48,7 @@ const ActionsTD = ({ log, setSelectedLog, setEditFormState, setRemoveModalState 
             }}
             className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 outline-red-500 disabled:outline-black disabled:bg-gray-300`}>
             <div className="flex justify-center items-center text-red-500">
-              <Delete />
+              <MdDelete className="w-4 h-4" />
             </div>
           </button>
           <DeleteTooltip />

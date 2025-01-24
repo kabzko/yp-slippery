@@ -18,7 +18,7 @@ const apiSlice = createSlice({
   initialState: {
     data: null,
     loading: false,
-    error: null,
+    error: null as string | null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -32,7 +32,7 @@ const apiSlice = createSlice({
       })
       .addCase(fetchDashboardData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error.message || 'An error occurred';
       });
   },
 });

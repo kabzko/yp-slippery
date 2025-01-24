@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import { DailyLogsContext, LogsContext } from "../../../../contexts";
-import useAddLog from "../hooks/useAddlog";
+import useAddLog from "../hooks/useAddLog"; 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { nanoid } from "nanoid";
+// import { nanoid } from "nanoid";
 import { useForm, Controller } from "react-hook-form";
 import MultiSelect from "../../payroll/MultiSelect";
 import { getEmployees } from "../helpers/api";
 import ReactDOM from "react-dom";
-import classNames from "../../../../../helpers/classNames";
+import classNames from "@/helpers/classNames";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 
 interface ModalProps {
   isOpen: boolean;
@@ -128,6 +128,10 @@ export default function CreateFormModal({ isOpen, onClose }: ModalProps) {
     onClose();
   };
 
+  const handleSetFieldValue = (fieldName: string, value: string[]) => {
+    setValue(fieldName as any, value);
+  };
+
   return (
     <>
       {isOpen && (
@@ -187,8 +191,7 @@ export default function CreateFormModal({ isOpen, onClose }: ModalProps) {
                             selected={selected.employee}
                             items={employeeNames}
                             itemType="employee"
-                            setFieldValue={setValue}
-                            errors={[]}
+                            setFieldValue={handleSetFieldValue}
                           />
                         </div>
                         <div>

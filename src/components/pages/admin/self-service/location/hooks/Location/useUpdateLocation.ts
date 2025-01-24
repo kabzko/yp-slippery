@@ -12,7 +12,7 @@ async function updateLocation(data: locationType) {
       body: JSON.stringify(data),
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/locations/location/${data.id}`,
+      `https://yp3.yahshuasolutions.com/api/locations/location/${data.id}/`,
       config
     );
     if (!res.ok) {

@@ -10,7 +10,7 @@ async function deleteSubUnit(subUnitId: number) {
       }
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/sub-units/sub-unit/${subUnitId}`,
+      `https://yp3.yahshuasolutions.com/api/sub-units/sub-unit/${subUnitId}/`,
       config
     );
     if (!res.ok) {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Tax from '../../../../assets/Tax.png'; 
-import Tax1 from '../../../../assets/Tax1.png'; 
+import Tax from '@/assets/Tax.png'; 
+import Tax1 from '@/assets/Tax1.png'; 
+import LazyImage from "@/components/common/LazyImage";
 
 const TaxCalculation = () => {
   const [isMonthlyTaxCalculationEnabled, setIsMonthlyTaxCalculationEnabled] = useState(false);
@@ -22,17 +23,11 @@ const TaxCalculation = () => {
       </div>
 
       <div className="flex justify-center mt-8 mb-6">
-        <img 
-          src={Tax} 
-          alt="Tax Calculation" 
-          className="rounded-full responsive-img" 
-          width={200} 
-          height={200} 
-        />
+        <LazyImage src={Tax} alt="Tax Calculation" className="w-[200px] h-[200px] rounded-full" />
       </div>
 
       <div className="text-xs font-bold text-gray-700 mt-2 flex items-center space-x-2">
-        <img src={Tax1} alt="Tax Information" width={32} height={32} />
+        <LazyImage src={Tax1} alt="Tax Information" className="w-12 h-8 object-cover" />
         <p>YAHSHUA Payroll automatically calculates taxes based on yearly amounts.</p>
       </div>
 
@@ -47,13 +42,3 @@ const TaxCalculation = () => {
 };
 
 export default TaxCalculation;
-
-
-
-
-
-
-
-
-
-

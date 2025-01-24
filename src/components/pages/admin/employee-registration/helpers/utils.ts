@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { nationalities, regionsPH, contactRelationship } from "./constants";
 
-import { Employee, JobProfile } from '../../../../types';
+import { Employee, JobProfile } from '@/components/types';
 
 export const initialEmployeeProfileValues: Employee = {
   first_name: "",
@@ -21,7 +21,7 @@ export const initialEmployeeProfileValues: Employee = {
   local_address_zip: 0,
   foreign_address: "",
   foreign_address_zip: 0,
-  rdo_code: "", //
+  rdo_code: 0, //
   contact_num: "",
   contact_person: "",
   relationship: "",

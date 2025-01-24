@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import UploadCSV from "./modals/UploadCSV";
-import { Download, Upload as UploadIcon } from "@mui/icons-material";
+import { MdDownload, MdUpload } from "react-icons/md";
 import { DailyLogsContext } from "../../../contexts";
 import TemplatePreview from "./modals/DownloadTemplatePreview";
 
@@ -32,7 +32,7 @@ function DownloadUpload() {
       <div className="flex justify-end space-x-4">
         <div className="relative group">
           <button onClick={handlePreviewOpen} className="flex items-center justify-between px-6 py-2 font-semibold text-blue-500 bg-white rounded outline outline-1 outline-blue-500">
-            <Download className="mr-2.5" />
+            <MdDownload className="w-6 h-6 mr-2.5" />
             Download Template
           </button>
           <span className="absolute z-10 w-56 scale-0 rounded-lg bg-[#344960] p-4 text-xs text-white group-hover:scale-100 flex -top-4 -left-60">
@@ -44,7 +44,7 @@ function DownloadUpload() {
         </div>
         <div className="relative group">
           <button onClick={handleUploadOpen} className="flex items-center justify-between px-6 py-2 font-semibold text-blue-500 bg-white rounded outline outline-1 outline-blue-500">
-            <UploadIcon className="mr-2.5" />
+            <MdUpload className="w-6 h-6 mr-2.5" />
             Upload file
           </button>
           <span className="absolute z-10 w-40 scale-0 rounded-lg bg-[#344960] p-4 text-xs text-white group-hover:scale-100 flex -top-8 -right-40">

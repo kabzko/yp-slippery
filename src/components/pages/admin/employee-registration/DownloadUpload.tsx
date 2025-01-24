@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
 import axios from "axios";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import UploadCSV from "./modals/UploadCSV";
-import { Download, Upload as UploadIcon } from "@mui/icons-material";
+import { MdDownload, MdUpload } from "react-icons/md";
 import { EmployeeRegistrationContext } from "../../../contexts";
 
 function DownloadUpload() {
@@ -44,11 +44,11 @@ function DownloadUpload() {
       <UploadCSV isOpen={modalState} onClose={handleClose} />
       <div className="flex justify-end space-x-4">
         <button onClick={handleDownload} className="flex items-center justify-between px-6 py-2 font-semibold text-blue-500 bg-white rounded outline outline-1 outline-blue-500">
-          <Download className="mr-2.5" />
+          <MdDownload className="w-6 h-6 mr-2.5" />
           Download Template
         </button>
         <button onClick={handleOpen} className="flex items-center justify-between px-6 py-2 font-semibold text-blue-500 bg-white rounded outline outline-1 outline-blue-500">
-          <UploadIcon className="mr-2.5" />
+          <MdUpload className="w-6 h-6 mr-2.5" />
           Upload file
         </button>
       </div>

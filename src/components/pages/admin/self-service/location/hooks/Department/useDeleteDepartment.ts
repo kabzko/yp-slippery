@@ -9,7 +9,7 @@ async function deleteDepartmentData(departmentId: number) {
         'Content-Type': 'application/json',
       }
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/departments/department/${departmentId}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/departments/department/${departmentId}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

@@ -2,7 +2,7 @@ import React from "react";
 import useAddSection from "../hooks/useAddSection";
 import { useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import useGetSectionsData from "../hooks/useGetSectionData";
 
 interface ModalProps {

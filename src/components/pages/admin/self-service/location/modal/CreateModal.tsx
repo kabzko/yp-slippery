@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { FC, useState } from 'react';
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import useAddLocation from "../hooks/Location/useAddLocation";
 import useAddDepartment from "../hooks/Department/useAddDepartment";
 import useAddPosition from "../hooks/Position/useAddPosition";
@@ -50,7 +50,7 @@ const CreateModal: FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const { control, handleSubmit, reset, formState: { isValid, isSubmitting } } = useForm({
     defaultValues: defaultInitialValues,
-    mode: "onChange", // Validate on change
+    mode: "onChange", 
   });
 
   const { mutate: mutateLocation, isPending: isLocationPending } = useAddLocation();

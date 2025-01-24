@@ -1,5 +1,5 @@
 import { FC , useState } from "react";
-import classNames from "../../../../../../helpers/classNames";
+import classNames from "@/helpers/classNames";
 
 interface ModalProps {
   isOpen: boolean;

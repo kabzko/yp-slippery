@@ -11,7 +11,7 @@ async function updatePosition(data: positionType) {
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/positions/position/${data.id}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/positions/position/${data.id}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

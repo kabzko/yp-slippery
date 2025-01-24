@@ -1,10 +1,8 @@
 import * as Yup from 'yup';
 import MultiSelect from '../MultiSelect';
 import { getEmployees } from '../helpers/api';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-// import { fetchDepartmentData } from '@/components/pages/self-service/location/hooks/useDepartmentQueries';
-// import { fetchLocationData } from '@/components/pages/self-service/location/hooks/useLocationQueries';
-// import { FormTooltip } from '@/components/pages/admin/setup/daily-logs/Tooltip';
+import { useForm, Controller, UseFormRegister } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { DailyLogsContext, LogsContext } from '../../../../contexts';
 import { useEffect, useState, useContext } from "react";
@@ -47,17 +45,44 @@ export default function EditFormModal({ isOpen, onClose, }: ModalProps) {
   });
   const { payrollProcessType } = useContext(DailyLogsContext);
   const { logs, selectedLog, setSelectedLog } = useContext(LogsContext)
-  const { mutate} = useUpdateLog();
-  const [queryKey, setQueryKey] = useState<string>("");
+  const { mutate } = useUpdateLog();
   const [tooltipVisible, setTooltipVisible] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string[]>([])
   const [employeeNames, setNames] = useState<string[]>([])
   const queryClient = useQueryClient();
 
+  const logsSchema = Yup.object().shape({
+    id: Yup.number(),
+    date: Yup.string().required('Date is required'),
+    employee: Yup.array().required('Employee is required'),
+    reason: Yup.string().required('Reason is required'),
+    timein: Yup.number(),
+    timeout: Yup.number(),
+    time_in_hours: Yup.number(),
+    time_in_minutes: Yup.number(),
+    time_out_hours: Yup.number(),
+    time_out_minutes: Yup.number(),
+  });
+
+  const { register, handleSubmit: hookFormSubmit, formState: { errors, isValid }, control, setValue, reset, watch } = useForm({
+    resolver: yupResolver(logsSchema),
+    defaultValues: {
+      id: 0,
+      date: "",
+      employee: [],
+      reason: "",
+      timein: 0,
+      timeout: 0,
+      time_in_hours: 0,
+      time_in_minutes: 0,
+      time_out_hours: 0,
+      time_out_minutes: 0,
+    }
+  });
+
   useEffect(() => {
     if (isOpen && selectedLog) {
       setFullName([`${selectedLog.employee.firstname} ${selectedLog.employee.lastname}`]);
-      // setFullName([selectedLog.employee.firstname, selectedLog.employee.lastname]);
     }
   }, [isOpen, selectedLog])
 
@@ -76,47 +101,91 @@ export default function EditFormModal({ isOpen, onClose, }: ModalProps) {
     console.log(selectedLog)
   }, [selectedLog])
 
-  const initialLogsValues = {
-    id: 0,
-    date: "",
-    employee: [],
-    reason: "",
-    timein: "",
-    timeout: "",
-    time_in_hours: "", // temp property
-    time_in_minutes: "", // temp property
-    time_out_hours: "", // temp property
-    time_out_minutes: "", // temp property
+  useEffect(() => {
+    const timeFields = ["timein", "timeout"];
+
+    const setTimeFields = (
+      timeProperty: "timein" | "timeout",
+      hoursField: "time_in_hours" | "time_out_hours",
+      minutesField: "time_in_minutes" | "time_out_minutes"
+    ) => {
+      const time = selectedLog[timeProperty];
+      if (time !== null && time !== undefined) {
+        const [hours, minutes] = time.split(":");
+        setValue(hoursField, hours, { shouldValidate: true });
+        setValue(minutesField, minutes, { shouldValidate: true });
+      } else {
+        setValue(hoursField, 0, { shouldValidate: true });
+        setValue(minutesField, 0, { shouldValidate: true });
+      }
+    };
+
+    if (selectedLog) {
+      setTimeFields("timein", "time_in_hours", "time_in_minutes");
+      setTimeFields("timeout", "time_out_hours", "time_out_minutes");
+
+      for (const property in selectedLog) {
+        const value = selectedLog[property] === null ? '' : selectedLog[property];
+        if (!timeFields.includes(property)) {
+          if (property === 'timeout_reason') {
+            setValue('reason', value, { shouldValidate: true });
+          } else if (property === 'employee') {
+            // Convert employee object to array format
+            setValue('employee', [value], { shouldValidate: true });
+          } else if (property === 'id' || 
+                     property === 'date' || 
+                     property === 'reason' || 
+                     property === 'timein' || 
+                     property === 'timeout' || 
+                     property === 'time_in_hours' || 
+                     property === 'time_in_minutes' || 
+                     property === 'time_out_hours' || 
+                     property === 'time_out_minutes') {
+            setValue(property as any, value, { shouldValidate: true });
+          }
+        }
+      }
+    }
+  }, [selectedLog, setValue]);
+
+  const onSubmit = (data: any) => {
+    const {
+      time_in_hours,
+      time_in_minutes,
+      time_out_hours,
+      time_out_minutes,
+    } = data;
+
+    const finalValues = {
+      ...data,
+      id: selectedLog.id,
+      employee: selectedLog.employee.id,
+      timein: time_in_hours ? `${time_in_hours}:${time_in_minutes || '00'}` : null,
+      timeout: time_out_hours ? `${time_out_hours}:${time_out_minutes || '00'}` : null,
+    };
+
+    mutate(finalValues, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['logs'] });
+        toast.custom(() => <CustomToast message={`Successfully updated employee.`} type='success' />, {
+          duration: 4000
+        });
+        onClose();
+      },
+      onError: () => {
+        queryClient.invalidateQueries({ queryKey: ['logs'] });
+        toast.custom(() => <CustomToast message={`Failed to update employee.`} type='error' />, {
+          duration: 4000
+        });
+      },
+    });
+    reset();
   };
 
-  const logsSchema = Yup.object({
-    date: Yup.string().required("(Required)"),
-    employee: Yup.mixed().required('(Required)'),//Yup.array()
-    // .of(Yup.string())
-    // .test('is-in-array', '(Invalid value)', function (value) {
-    // 	const { employeeNames, selectedLog } = this.parent.context || {};
-    // 	const selectedEmployeeNames = Array.isArray(value) ? value : [value];
-    // 	const allEmployeeNames = [...(employeeNames || [])];
-    // 	if (selectedLog && selectedLog.employee) {
-    // 		allEmployeeNames.push(`${selectedLog.employee.firstname} ${selectedLog.employee.lastname}`);
-    // 	}
-    // 	return selectedEmployeeNames.every(v => allEmployeeNames.includes(v));
-    // })
-
-    // .test('is-in-array', '(Invalid value)', function (value) {
-    // 	if (!Array.isArray(value)) return false;
-    // 	if (value.length === 0) return false;
-    // 	return value.every(v => employeeNames.includes(v ?? ''));  // Handle potential undefined values safely
-    // })
-    // .required('(Required)'),
-    reason: Yup.string().required("(Required)"),
-    timein: Yup.number(),
-    timeout: Yup.number(),
-    time_in_hours: Yup.number(),
-    time_in_minutes: Yup.number(),
-    time_out_hours: Yup.number(),
-    time_out_minutes: Yup.number(),
-  });
+  const handleClose = () => {
+    reset();
+    onClose();
+  }
 
   const FormTooltip = ({ id, tooltipVisible }: FormTooltipProps) => {
     const labelElement = document.getElementById(id);
@@ -138,37 +207,6 @@ export default function EditFormModal({ isOpen, onClose, }: ModalProps) {
     )
   }
 
-  const handleSubmit = async (data: any) => {
-    const newLog = {
-      id: selectedLog.id,
-      employee: selectedLog.employee.id,
-      date: data.date,
-      timeout_reason: data.reason,
-      timein: data.timein,
-      timeout: data.timeout,
-    };
-    mutate(newLog, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['logs'] });
-        toast.custom(() => <CustomToast message={`Successfully updated employee.`} type='success' />, {
-          duration: 4000
-        });
-        onClose();
-      },
-      onError: () => {
-        queryClient.invalidateQueries({ queryKey: ['logs'] });
-        toast.custom(() => <CustomToast message={`Failed to update employee.`} type='error' />, {
-          duration: 4000
-        });
-      },
-    });
-  };
-
-  const handleClose = () => {
-    onClose();
-  }
-
-
   return (
     <>
       {(isOpen && selectedLog && employeeNames) && (
@@ -181,210 +219,132 @@ export default function EditFormModal({ isOpen, onClose, }: ModalProps) {
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
               <div className="inline-block overflow-hidden w-1/2 text-left align-bottom bg-white rounded-lg shadow-xl transition-all transform sm:my-8 sm:align-middle sm:mx-6 md:mx-28">
                 <div className="text-center sm:text-left">
-                  <Formik
-                    initialValues={initialLogsValues}
-                    validationSchema={logsSchema}
-                    context={{ employeeNames: employeeNames || [], selectedLog }}
-                    onSubmit={(values, actions) => {
-                      const {
-                        time_in_hours,
-                        time_in_minutes,
-                        time_out_hours,
-                        time_out_minutes,
-                        //employee,
-                        ...rest
-                      } = values;
+                  <div className="flex justify-between p-5 w-full bg-blue-600">
+                    <h3 className="pr-2 text-lg font-medium leading-6 text-white truncate">
+                      Edit Daily Logs
+                    </h3>
+                    <button type="button" onClick={handleClose}>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="mx-10">
+                    <form onSubmit={hookFormSubmit(onSubmit)}>
+                      <div className="my-4 space-y-3">
+                        <div>
+                          <label htmlFor="date" className="mb-1 label-modal">
+                            Date<span className="text-red-500">*</span>
+                            {errors.date && (
+                              <span className="text-red-500 ml-1.5">
+                                {errors.date.message}
+                              </span>
+                            )}
+                          </label>
+                          <input
+                            {...register('date')}
+                            className="input-text-modal"
+                            type="date"
+                            id="date"
+                            placeholder="Select date"
+                          />
+                        </div>
+                        <div>
+                          <span
+                            onMouseEnter={() => setTooltipVisible('employee')}
+                            onMouseLeave={() => setTooltipVisible(null)}>
+                            <label htmlFor="employee" className="mb-1 label-modal" id="employee">
+                              Employee<span className="text-red-500">*</span>
+                              {errors.employee && (
+                                <span className="text-red-500 ml-1.5">
+                                  {errors.employee.message}
+                                </span>
+                              )}
+                            </label>
+                            {tooltipVisible === 'employee' && <FormTooltip id="employee" tooltipVisible={tooltipVisible} />}
+                          </span>
 
-                      const finalValues = {
-                        ...rest,
-                        //employee: selectedLog.employee,//Array.isArray(employee) ? employee.join(',') : employee,
-                        timein: time_in_hours ? `${time_in_hours}:${time_in_minutes || '00'}` : null,
-                        timeout: time_out_hours ? `${time_out_hours}:${time_out_minutes || '00'}` : null,
-                      };
-                      // console.log(finalValues)
-                      handleSubmit(finalValues);
-                      actions.resetForm({
-                        values: initialLogsValues,
-                      });
-                    }} enableReinitialize>
-                    {({ isSubmitting, resetForm, isValid, setValues, errors, values, setFieldValue }) => {
-                      useEffect(() => {
-                        const timeFields = [
-                          "timein",
-                          "timeout",
-                        ];
-
-                        const setTimeFields = (timeProperty: string, hoursField: string, minutesField: string) => {
-                          const time = selectedLog[timeProperty];
-                          if (time !== null && time !== undefined) {
-                            const [hours, minutes] = time.split(":");
-                            setFieldValue(hoursField, hours, false);
-                            setFieldValue(minutesField, minutes, false);
-                          } else {
-                            setFieldValue(hoursField, '', false);
-                            setFieldValue(minutesField, '', false);
-                          }
-                        };
-
-                        if (selectedLog) {
-                          setTimeFields("timein", "time_in_hours", "time_in_minutes");
-                          setTimeFields("timeout", "time_out_hours", "time_out_minutes");
-
-                          for (const property in selectedLog) {
-                            const value = selectedLog[property] === null ? '' : selectedLog[property];
-                            if (!timeFields.includes(property)) {
-                              if (property === 'timeout_reason') {
-                                setFieldValue('reason', value, false);
-                              } else {
-                                setFieldValue(property, value, false);
-                              }
-                            }
-                          }
-                        }
-                      }, [selectedLog]);
-                      useEffect(() => {
-                        if (errors) console.log(errors)
-                      }, [errors])
-
-                      useEffect(() => {
-                        if (values) console.log(values)
-                      }, [values])
-
-                      return (
-                        <span className="mt-7">
-                          <div className="flex justify-between p-5 w-full bg-blue-600">
-                            <h3 className="pr-2 text-lg font-medium leading-6 text-white truncate">
-                              Edit Daily Logs
-                            </h3>
-                            <button type="button" onClick={() => { resetForm(); handleClose(); }}>
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                  d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
-                                  fill="white"
+                          {(fullName && employeeNames) && (
+                            <Controller
+                              name="employee"
+                              control={control}
+                              render={({ field }) => (
+                                <MultiSelect
+                                  initialSelected={fullName}
+                                  setSelected={setSelected}
+                                  selected={selected.employee}
+                                  items={employeeNames}
+                                  itemType="employee"
+                                  setFieldValue={(_, value) => setValue("employee", value)}
                                 />
-                              </svg>
-                            </button>
+                              )}
+                            />
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="reason" className="mb-1 label-modal">
+                            Reason<span className="text-red-500">*</span>
+                            {errors.reason && (
+                              <span className="text-red-500 ml-1.5">
+                                {errors.reason.message}
+                              </span>
+                            )}
+                          </label>
+                          <input
+                            {...register('reason')}
+                            className="input-text-modal"
+                            type="text"
+                            id="reason"
+                            placeholder="Enter Reason..."
+                          />
+                        </div>
+                        <div className="flex space-x-3.5">
+                          <div className="py-2 w-full">
+                            <h1 className="mb-1 text-sm font-normal">
+                              Time In
+                            </h1>
+                            <TimeInput name="timein" time={selectedLog.timein} register={register} />
                           </div>
-                          <div className="mx-10">
-                            <Form>
-                              <div className="my-4 space-y-3">
-                                <div>
-                                  <label htmlFor="date" className="mb-1 label-modal">
-                                    Date<span className="text-red-500">*</span>
-                                    <ErrorMessage
-                                      name="date"
-                                      component="span"
-                                      className="text-red-500 ml-1.5"
-                                    />
-                                  </label>
-                                  <Field
-                                    className="input-text-modal"
-                                    name="date"
-                                    type="date"
-                                    id="date"
-                                    placeholder="Select date"
-                                  />
-                                </div>
-                                <div>
-                                  <span
-                                    onMouseEnter={() => setTooltipVisible('employee')}
-                                    onMouseLeave={() => setTooltipVisible(null)}>
-                                    <label htmlFor="employee" className="mb-1 label-modal" id="employee">
-                                      Employee<span className="text-red-500">*</span>
-                                      <ErrorMessage
-                                        name="employee"
-                                        component="span"
-                                        className="text-red-500 ml-1.5"
-                                      />
-                                    </label>
-                                    {tooltipVisible === 'employee' && <FormTooltip id="employee" tooltipVisible={tooltipVisible} />}
-                                  </span>
-
-                                  {(fullName && employeeNames) && (
-                                    <MultiSelect
-                                      initialSelected={fullName}
-                                      setSelected={setSelected}
-                                      selected={selected.employee}
-                                      items={employeeNames} itemType="employee"
-                                      setFieldValue={setFieldValue}
-                                    />
-                                  )}
-                                </div>
-                                <div>
-                                  <label htmlFor="reason" className="mb-1 label-modal">
-                                    Reason<span className="text-red-500">*</span>
-                                    <ErrorMessage
-                                      name="reason"
-                                      component="span"
-                                      className="text-red-500 ml-1.5"
-                                    />
-                                  </label>
-                                  <Field
-                                    className="input-text-modal"
-                                    name="reason"
-                                    type="text"
-                                    id="reason"
-                                    placeholder="Enter Reason..."
-                                  />
-                                </div>
-                                <div className="flex space-x-3.5">
-                                  <div className="py-2 w-full">
-                                    <h1 className="mb-1 text-sm font-normal">
-                                      Time In
-                                    </h1>
-                                    <div className="flex space-x-1.5 items-center">
-                                      <TimeInput
-                                        name="time_in"
-                                        time={selectedLog && selectedLog?.timein}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="py-2 w-full">
-                                    <h1 className="mb-1 text-sm font-normal">
-                                      Time Out
-                                    </h1>
-                                    <div className="flex space-x-1.5 items-center">
-                                      <TimeInput
-                                        name="time_out"
-                                        time={selectedLog && selectedLog?.timeout}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="justify-start my-7 sm:flex sm:flex-row-reverse">
-                                <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                  {!isValid ? (
-                                    <button disabled={!isValid}
-                                      className={`inline-flex justify-center px-10 py-2 w-full text-base font-bold leading-6 text-white rounded-md border border-gray-700 shadow-sm transition duration-150 ease-in-out bg-slate-500 focus:outline-none hover:bg-gray-400 hover:shadow-md focus:shadow-outline-blue sm:text-sm sm:leading-5`}>
-                                      Invalid fields
-                                    </button>
-                                  ) : (
-                                    <button type="submit" disabled={isSubmitting}
-                                      className={`inline-flex justify-center px-10 py-2 w-full text-base font-bold leading-6 text-white bg-blue-600 rounded-md border border-blue-700 shadow-sm transition duration-150 ease-in-out focus:outline-none hover:bg-blue-800 hover:shadow-md focus:shadow-outline-blue sm:text-sm sm:leading-5`}>
-                                      {isSubmitting ? "Submitting..." : "SAVE"}
-                                    </button>
-                                  )}
-                                </span>
-                                <span className="flex mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                  <button type="button"
-                                    onClick={() => { resetForm(); handleClose(); }}
-                                    className="px-10 cancel-upload-csv-btn">
-                                    CLOSE
-                                  </button>
-                                </span>
-                              </div>
-                            </Form>
+                          <div className="py-2 w-full">
+                            <h1 className="mb-1 text-sm font-normal">
+                              Time Out
+                            </h1>
+                            <TimeInput name="timeout" time={selectedLog.timeout} register={register} />
                           </div>
+                        </div>
+                      </div>
+                      <div className="justify-start my-7 sm:flex sm:flex-row-reverse">
+                        <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                          <button
+                            type="submit"
+                            disabled={!isValid}
+                            className={`inline-flex justify-center px-10 py-2 w-full text-base font-bold leading-6 text-white rounded-md border shadow-sm transition duration-150 ease-in-out ${
+                              !isValid
+                                ? 'bg-slate-500 border-gray-700 hover:bg-gray-400'
+                                : 'bg-blue-600 border-blue-700 hover:bg-blue-800'
+                            } focus:outline-none hover:shadow-md focus:shadow-outline-blue sm:text-sm sm:leading-5`}
+                          >
+                            {!isValid ? 'Invalid fields' : 'Save'}
+                          </button>
                         </span>
-                      );
-										}}
-                  </Formik>
+                        <span className="flex mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                          <button type="button"
+                            onClick={handleClose}
+                            className="px-10 cancel-upload-csv-btn">
+                            Close
+                          </button>
+                        </span>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -395,7 +355,15 @@ export default function EditFormModal({ isOpen, onClose, }: ModalProps) {
   );
 }
 
-const TimeInput = ({ name, time }: { name: any; time: string }) => {
+const TimeInput = ({ 
+  name, 
+  time,
+  register 
+}: { 
+  name: "timein" | "timeout"; 
+  time: string;
+  register: UseFormRegister<any>;
+}) => {
   let hours, minutes;
 
   if (time) {
@@ -406,19 +374,17 @@ const TimeInput = ({ name, time }: { name: any; time: string }) => {
     <>
       {name && (
         <>
-          <Field
-            className="px-3 border bg-gray-50  border-gray-300 rounded-lg h-[53.57px] w-full"
-            name={`${name}_hours`}
+          <input
+            {...register(`${name}_hours`)}
+            className="px-3 border bg-gray-50 border-gray-300 rounded-lg h-[53.57px] w-full"
             type="text"
-            id={`${name}_hours`}
             placeholder="Hour"
           />
           <h1>:</h1>
-          <Field
+          <input
+            {...register(`${name}_minutes`)}
             className="px-3 border bg-gray-50 border-gray-300 rounded-lg h-[53.57px] w-full"
-            name={`${name}_minutes`}
             type="text"
-            id={`${name}_minutes`}
             placeholder="Minutes"
           />
         </>

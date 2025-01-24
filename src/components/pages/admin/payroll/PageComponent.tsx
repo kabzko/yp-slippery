@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { DailyLogsContext } from '../../../contexts';
+import { DailyLogsContext } from '@/components/contexts'; 
 import SelectProcessType from './SelectProcessType';
 import { Table } from './Table';
 import DownloadUpload from './DownloadUpload';
@@ -8,7 +8,8 @@ import ManageAccess from './ManageAccess';
 import SelectDateRange from './modals/SelectDateRangeModal';
 import SyncLoading from './modals/SyncLoadingModal';
 import PlsDownload from './modals/PleaseDownloadModal'
-import backgroundImage from '../../../../assets/YPS-OB_bg.png';
+import backgroundImageSrc from '@/assets/YPS-OB_bg.png';
+import { getOptimizedBackgroundUrl } from '@/config/images';
 
 interface CloudBasedType {
 	[key: string]: boolean;
@@ -36,6 +37,8 @@ export default function PageComponent() {
 		dateFrom: '',
 		dateTo: ''
 	})
+
+	const optimizedBgUrl = getOptimizedBackgroundUrl(backgroundImageSrc);
 
 	useEffect(() => {
 		// Update selected cloud-based type based on cloudBasedType state
@@ -106,9 +109,18 @@ export default function PageComponent() {
 
 	return (
 		<>
-			<div className="flex flex-col content-center justify-center bg-fixed bg-center bg-no-repeat bg-cover bg-origin-content" style={{ height: '75vh', alignItems: 'center', backgroundImage: `url(${backgroundImage})`  }}>
-			    <div className='w-full max-w-5xl'>
-				  {renderStepComponent()}
+			<div 
+				className="flex flex-col content-center justify-center bg-fixed bg-center bg-no-repeat bg-cover bg-origin-content" 
+				style={{ 
+					height: '75vh', 
+					alignItems: 'center', 
+					backgroundImage: `url(${optimizedBgUrl})`,
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}
+			>
+				<div className='w-full max-w-5xl'>
+					{renderStepComponent()}
 				</div>
 			</div>
 		</>

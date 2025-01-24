@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { DailyLogsContext, LogsContext } from "../../../contexts";
-import { UnfoldMoreSharp } from "@mui/icons-material";
+import { MdUnfoldMore } from "react-icons/md";
 
 type TableColumns = 'date' | 'employee' | 'employee_id';
 
@@ -58,21 +58,21 @@ export default function THeaders({
       <th className="th-outer" onClick={() => handleSort('date')}>
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Date</p>
-          <span className="text-blue-600"><UnfoldMoreSharp /></span>
+          <span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       {payrollProcessType === 'manual' && (
         <th className="th-outer" onClick={() => handleSort('employee')}>
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Name</p>
-          <span className="text-blue-600"><UnfoldMoreSharp /></span>
+          <span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       )}
       <th className="th-outer" onClick={() => handleSort('employee_id')}>
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Employee ID</p>
-          <span className="text-blue-600"><UnfoldMoreSharp /></span>
+          <span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <th className="th-outer">

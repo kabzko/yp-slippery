@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { TimekeeperContext, AccountContext } from "../../../contexts";
 import { HeaderTooltip } from '../timekeeper/Tooltip'
 import { TimekeeperAccount } from "../../../types";
-import { UnfoldMoreSharp } from "@mui/icons-material";
+import { MdUnfoldMore } from "react-icons/md";
 
 type TableColumns = 'username' | 'email';
 
@@ -165,13 +165,13 @@ export default function THeaders({
       <th className="th-outer" onClick={() => handleSort('username')}>
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">{getColumnLabel()}</p>
-          <span className="text-blue-600"><UnfoldMoreSharp /></span>
+          <span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <th className="th-outer" onClick={() => handleSort('email')}>
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Email</p>
-          <span className="text-blue-600"><UnfoldMoreSharp /></span>
+          <span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <th className="th-outer">

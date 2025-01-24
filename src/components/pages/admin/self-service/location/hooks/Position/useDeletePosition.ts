@@ -9,7 +9,7 @@ async function deletePosition(positionId: number) {
         'Content-Type': 'application/json',
       }
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/positions/position/${positionId}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/positions/position/${positionId}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

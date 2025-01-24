@@ -9,7 +9,7 @@ async function deleteUnit(unitId: number) {
         'Content-Type': 'application/json',
       }
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/units/unit/${unitId}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/units/unit/${unitId}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

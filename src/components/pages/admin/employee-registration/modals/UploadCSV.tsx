@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
-import CustomToast from "../../../../Toast/CustomToast";
-import { EmployeeRegistrationContext } from "../../../../contexts";
+import CustomToast from "@/components/Toast/CustomToast";
+import { EmployeeRegistrationContext } from "@/components/contexts";
 import useImportFile from "../hooks/useImportFile";
-import classNames from "../../../../../helpers/classNames";
+import classNames from "@/helpers/classNames";
+import LazyImage from "@/components/common/LazyImage";
 
 interface UploadCSVProps {
   isOpen: boolean;
@@ -91,7 +92,7 @@ export default function UploadCSV({ isOpen, onClose }: UploadCSVProps) {
                 // const last_name = employee["last_name"];
                 // const first_name = employee["first_name"];
 
-                
+
               }
             }).filter(Boolean);
             const newHeaderFields = ["first_name", "last_name", "email"];
@@ -171,11 +172,10 @@ export default function UploadCSV({ isOpen, onClose }: UploadCSVProps) {
                         />
                       </label>
                       <div className={classNames('', file !== null ? 'csv-file-preview' : "hidden")}>
-                        <img
-                          width="25"
-                          height="25"
+                        <LazyImage
                           src="https://img.icons8.com/ios/25/csv.png"
-                          alt="csv"
+                          alt="csv icon"
+                          className="w-6 h-6"
                         />
                         <p className="text-sm font-light text-slate-800">
                           {file?.name}

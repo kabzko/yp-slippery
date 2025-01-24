@@ -13,7 +13,7 @@ async function updateSection(data: sectionType) {
       body: JSON.stringify(data),
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/sections/section/${data.id}`,
+      `https://yp3.yahshuasolutions.com/api/sections/section/${data.id}/`,
       config
     );
     if (!res.ok) {

@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom"; 
-import EmojiParty from "../../../../../svg/emojiParty";
-import { ProgressIndicatorContext } from "../../../../contexts";
+import EmojiParty from "@/svg/emojiParty";
+import { ProgressIndicatorContext } from "@/components/contexts"; 
 
 interface ModalProps {
   isOpen: boolean;
