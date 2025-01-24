@@ -6,6 +6,10 @@ export const uploadSetupData = async (file: File | null, url: string) => {
   try {
     const config = {
       method: 'POST',
+      headers: {
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
+        'Content-Type': 'multipart/form-data',
+      },
       body: formData,
     };
     const res = await fetch(url, config);
@@ -28,6 +32,7 @@ export const uploadScheduleData = async (file: File | null, url: string, data: a
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
       },
       body: JSON.stringify(data),
     };

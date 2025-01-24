@@ -56,12 +56,12 @@ export const selfServiceHeaderFields: SelfServiceHeaderFields = {
 }
 
 export const stepToApiUrl: { [step: number]: string } = {
-  1: "api/setup/upload-csv/",
-  2: "api/schedules/import-csv/",
-  3: "api/divisions/import-csv/",
-  4: "api/sections/import-csv/",
-  5: "api/units/import-csv/",
-  6: "api/sub-units/import-csv/",
+  1: "/api/setup/upload-csv/",
+  2: "/api/schedules/import-csv/",
+  3: "/api/divisions/import-csv/",
+  4: "/api/sections/import-csv/",
+  5: "/api/units/import-csv/",
+  6: "/api/sub-units/import-csv/",
 };
 
 export const initialState = {

@@ -3,11 +3,11 @@ import { useMutation } from '@tanstack/react-query';
 async function updateSchedule(data: any) {
     try {
       const res = await fetch(
-        `https://yp3.yahshuasolutions.com/api/schedules/schedule/${data.id}/`,
+        `/api/schedules/schedule/${data.id}/`,
         {
           method: 'PATCH',
           headers: {
-            'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+            'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
             'content-type': 'application/json',
           },
           body: JSON.stringify(data)

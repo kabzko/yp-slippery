@@ -6,7 +6,7 @@ async function addDivision(data: divisionType) {
     const config = {
       method: 'POST',
       headers: {
-        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),

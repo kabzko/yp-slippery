@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 async function getLocationData() {
   try {
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/locations/`,
+      `/api/locations/`,
       {
         method: 'GET',
         headers: {
-          'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+          'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
           'Content-Type': 'application/json',
         }
       }

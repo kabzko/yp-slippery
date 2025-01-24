@@ -6,12 +6,12 @@ async function updatePosition(data: positionType) {
     const config = {
       method: 'PATCH',
       headers: {
-        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/positions/position/${data.id}/`, config);
+    const res = await fetch(`/api/positions/position/${data.id}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

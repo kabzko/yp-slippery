@@ -5,11 +5,11 @@ async function getDivisionDataById(id: number) {
     const config = {
       method: 'GET',
       headers: {
-        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
         'content-type': 'application/json',
       },
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/divisions/division/${id}`, config);
+    const res = await fetch(`/api/divisions/division/${id}`, config);
     if (!res.ok) {
       throw res.json();
     }

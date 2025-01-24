@@ -6,12 +6,12 @@ async function addLocation(data: locationType) {
     const config = {
       method: 'POST',
       headers: {
-        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/locations/`, config);
+    const res = await fetch(`/api/locations/`, config);
     if (!res.ok) {
       throw await res.json();
     }

@@ -5,12 +5,12 @@ async function deleteLocation(locationId: number) {
     const config = {
       method: 'DELETE',
       headers: {
-        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
         'Content-Type': 'application/json',
       }
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/locations/location/${locationId}/`,
+      `/api/locations/location/${locationId}/`,
       config
     );
     if (!res.ok) {
