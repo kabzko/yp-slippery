@@ -11,7 +11,7 @@ async function addDivision(data: divisionType) {
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch('https://yp3.yahshuasolutions.com/api/divisions/', config);
+    const res = await fetch('api/divisions/', config);
     if (!res.ok) {
       throw await res.json();
     }

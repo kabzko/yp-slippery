@@ -1,14 +1,23 @@
-import { useQuery } from '@tanstack/react-query'; 
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 const fetchTimeData = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/get_current_time/');
-    return response.data ?? {}; 
+    const config = {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+    };
+    const response = await fetch('/get_current_time/', config);
+    if (!response.ok) {
+      throw response.json();
+    }
+    const data = await response.json();
+    return data ?? {};
   } catch (error) {
-    throw new Error('Error fetching time data'); 
+    throw error;
   }
-}
+};
 
 function useGetTimeData() {
   return useQuery({

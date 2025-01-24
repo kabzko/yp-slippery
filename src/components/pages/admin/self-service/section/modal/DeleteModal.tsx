@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
 import { useState, useEffect, useContext } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
-import { SelfServiceContext } from "../../../../../contexts";
+import CustomToast from "@/components/toast/CustomToast";
+import { SelfServiceContext } from "@/components/contexts";
 import useDeleteSection from "../hooks/useDeleteSection";
 import useGetSectionData from "../hooks/useGetSectionData";
 

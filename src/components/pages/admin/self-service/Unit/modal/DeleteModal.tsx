@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
 import { useState, useEffect, useContext } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
-import { SelfServiceContext } from "../../../../../contexts";
+import CustomToast from "@/components/toast/CustomToast";
+import { SelfServiceContext } from "@/components/contexts"; 
 import useDeleteUnit from "../hooks/useDeleteUnit";
 import useGetUnitsData from "../hooks/useGetUnitData";
 
@@ -57,13 +57,13 @@ export default function DeleteModal({ unit, isOpen, onClose }: ModalProps) {
     <>
       {isOpen && (
         <div className={`block absolute z-20 ${modalClassName}`}>
-          <div className="overflow-y-auto fixed inset-0 z-20">
-            <div className="flex justify-center items-center px-4 pt-2 pb-20 min-h-screen text-center sm:block sm:p-0">
+          <div className="fixed inset-0 z-20 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen px-4 pt-2 pb-20 text-center sm:block sm:p-0">
               <div className="fixed inset-0 transition-opacity">
                 <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
               </div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-              <div className="inline-block overflow-hidden text-left align-bottom bg-white rounded-lg shadow-xl transition-all transform sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:pb-6">
+              <div className="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:pb-6">
                 <div className="pb-5 text-center sm:text-left">
                   <div className="flex justify-center mt-2 sm:p-6">
                     <svg width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +74,7 @@ export default function DeleteModal({ unit, isOpen, onClose }: ModalProps) {
                     {selectedRows.length > 1 ? "Are you sure you want to delete these items?":`Are you sure you want to delete ${unitName}?`}
                   </h1>
                 </div>
-                <div className="justify-center pr-6 mt-5 w-full sm:mt-4 sm:flex sm:flex-row-reverse sm:pl-6">
+                <div className="justify-center w-full pr-6 mt-5 sm:mt-4 sm:flex sm:flex-row-reverse sm:pl-6">
                   <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                     <button type="button"
                       className="px-12 upload-csv-btn"
@@ -83,7 +83,7 @@ export default function DeleteModal({ unit, isOpen, onClose }: ModalProps) {
                       Yes
                     </button>
                   </span>
-                  <span className="flex mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                  <span className="flex w-full mt-3 rounded-md shadow-sm sm:mt-0 sm:w-auto">
                     <button type="button"
                       className="px-12 cancel-upload-csv-btn"
                       onClick={handleCancel}

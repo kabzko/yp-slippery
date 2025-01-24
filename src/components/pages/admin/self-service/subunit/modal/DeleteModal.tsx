@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { useState, useEffect, useContext } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "../../../../../toast/CustomToast";
 import { SelfServiceContext } from "../../../../../contexts";
 import useDeleteSubUnit from "../hooks/useDeleteSubUnit";
 import useGetSubUnitData from "../hooks/useGetSubUnit";

@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import SkipProcessModal from "../../../../modal/SkipModal";
-import SuccessModal from "../Modal/SubmissionModal";
-import { ProgressIndicatorContext } from "../../../../contexts";
+import React, { useState, useContext } from 'react';
+import SkipProcessModal from '../../../../modal/SkipModal';
+import SuccessModal from '../Modal/SubmissionModal';
+import { ProgressIndicatorContext } from '../../../../contexts';
 
 // Define prop types for better TypeScript support
 interface StepperButtonsProps {
@@ -12,7 +12,8 @@ interface StepperButtonsProps {
 
 const StepperButtons: React.FC<StepperButtonsProps> = ({ onBack, onNext, step }) => {
   const [skipModalState, setSkipModalState] = useState(false);
-  const { progressState, progressDispatch, skippedProgress, setSkippedProgressState } = useContext(ProgressIndicatorContext);
+  const { progressState, progressDispatch, skippedProgress, setSkippedProgressState } =
+    useContext(ProgressIndicatorContext);
   const [successModalState, setSuccessModalState] = useState(false);
 
   // Check if the industry value is set in localStorage
@@ -27,7 +28,7 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({ onBack, onNext, step })
       console.error(e);
       return undefined;
     }
-  }
+  };
 
   // Handle "Next" button click
   const handleClickNext = () => {
@@ -64,7 +65,6 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({ onBack, onNext, step })
         });
       }
       setSkippedProgressState(false);
-  
     }
   };
 
@@ -80,16 +80,16 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({ onBack, onNext, step })
     });
     setSkippedProgressState(true);
     setSkipModalState(true);
-  }
+  };
 
   // Close the Skip Process modal
   const closeSkipModal = () => {
     setSkipModalState(false);
-  }
+  };
 
   const closeSuccessModal = () => {
-    setSuccessModalState(false)
-  }
+    setSuccessModalState(false);
+  };
 
   return (
     <>
@@ -98,38 +98,33 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({ onBack, onNext, step })
         onClose={closeSkipModal}
         progress={progressState.steps['setupMiscellaneousList'].progress}
       />
-      <SuccessModal
-        isOpen={successModalState}
-        onClose={closeSuccessModal} />
-      <div className="py-6 bg-white shadow border-b-zinc-300">
-        <div className="flex justify-between mx-5">
+      <SuccessModal isOpen={successModalState} onClose={closeSuccessModal} />
+      <div className='py-6 bg-white shadow border-b-zinc-300'>
+        <div className='flex justify-between mx-5'>
           <button
             onClick={onBack}
             disabled={step === 1}
-            className="prev-step"
+            className='px-12 py-3 rounded-lg border-blue-500 border-2 text-blue-500 disabled:bg-gray-300 disabled:text-gray-500'
           >
             Back
           </button>
-          <div className="flex flex-row gap-x-3">
-            <button
-              className="font-semibold text-blue-600 underline"
-              onClick={handleSkipProcess}
-            >
-              I'll do this later.
+          <div className='flex flex-row gap-x-3'>
+            <button className='underline text-blue-600 font-semibold mr-8' onClick={() => location.href = "/logout"}>
+              Sign Out
             </button>
             {step !== (isIndustry() ? 6 : 2) ? (
               <button
                 onClick={handleClickNext}
-                className="px-12 py-3 rounded-lg bg-[#2757ED] text-white disabled:bg-gray-300 disabled:text-gray-500"
+                className='px-12 py-3 rounded-lg bg-[#2757ED] text-white disabled:bg-gray-300 disabled:text-gray-500'
               >
                 Next
               </button>
             ) : (
               <button
                 onClick={() => setSuccessModalState(true)}
-                className="px-12 py-3 rounded-lg bg-[#2757ED] text-white disabled:bg-gray-300 disabled:text-gray-500"
+                className='px-12 py-3 rounded-lg bg-[#2757ED] text-white disabled:bg-gray-300 disabled:text-gray-500'
               >
-                Proceed
+                Finish
               </button>
             )}
           </div>

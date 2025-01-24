@@ -7,10 +7,11 @@ async function addIndustry(data: industryType) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/industry/`, config);
+    const res = await fetch(`/api/industry/`, config);
     if (!res.ok) {
       throw await res.json();
     }
@@ -25,7 +26,7 @@ async function addIndustry(data: industryType) {
 
 function useAddCompanyIndustry() {
   const mutation = useMutation({
-    mutationFn: (data: industryType) => addIndustry(data)
+    mutationFn: (data: industryType) => addIndustry(data),
   });
   return mutation;
 }

@@ -1,8 +1,8 @@
 import { FC, useState, useEffect, useContext } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import CustomToast from "../../../../../Toast/CustomToast";
-import { SelfServiceContext } from "../../../../../contexts";
+import CustomToast from "@/components/toast/CustomToast";
+import { SelfServiceContext } from "@/components/contexts";
 import useDeleteDivision from "../hooks/useDeleteDivision";
 import useGetDivisionData from "../hooks/useGetDivisionData";
 

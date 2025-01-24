@@ -1,9 +1,10 @@
 import toast from "react-hot-toast";
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import{ useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
-import { SelfServiceContext } from "../../../../../contexts";
+import CustomToast from "@/components/toast/CustomToast";
+import { SelfServiceContext } from "@/components/contexts";
 import useDeleteSchedule from "../hooks/useDeleteSchedule";
+import useGetScheduleData from "../hooks/useGetScheduleData";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,15 +15,13 @@ interface ModalProps {
 export default function DeleteModal({ selectedSched, isOpen, onClose }: ModalProps) {
   const modalClassName = isOpen ? 'block absolute z-10' : 'hidden';
   const { selectedRows, setSelectedRows } = useContext(SelfServiceContext)
-  const [schedCode, setSchedCode] = useState<string>('');
+  const schedCode = Array.isArray(selectedSched) 
+    ? selectedSched[0]?.value 
+    : selectedSched?.value;
   const deleteSchedule = useDeleteSchedule();
   const queryClient = useQueryClient();
+  const { refetch } = useGetScheduleData(1, 10)
 
-  useEffect(() => {
-    if (selectedSched && selectedRows.length === 1) {
-      setSchedCode(selectedSched[0]?.value);
-    }
-  }, [selectedSched, selectedRows]);
 
   const handleAccept = async () => {
     Promise.all(selectedRows.map((row) => 
@@ -30,9 +29,10 @@ export default function DeleteModal({ selectedSched, isOpen, onClose }: ModalPro
         onSuccess: (data: any) => {
           queryClient.invalidateQueries({ queryKey: ['schedulesData'] });
           toast.custom(
-            () => <CustomToast message={data.message} type="success" />,
+            () => <CustomToast message="Deleted successfully" type="success" />,
             { duration: 4000 }
           );
+          refetch();
         },
         onError: (error: any) => {
           toast.custom(

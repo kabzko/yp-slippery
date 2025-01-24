@@ -5,11 +5,12 @@ async function deleteSchedule(scheduleId: number) {
     const config = {
       method: 'DELETE',
       headers: {
+        'Authorization': 'token 9c031f9de0e7fe7cf1bbd63062b007d07bb92319',
         'Content-Type': 'application/json',
       }
     };
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/schedules/schedule/${scheduleId}`,
+      `https://yp3.yahshuasolutions.com/api/schedules/schedule/${scheduleId}/`,
       config
     );
     if (!res.ok) {

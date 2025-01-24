@@ -10,7 +10,7 @@ async function deleteSection(sectionId: number) {
       }
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/sections/section/${sectionId}`,
+      `https://yp3.yahshuasolutions.com/api/sections/section/${sectionId}/`,
       config
     );
     if (!res.ok) {

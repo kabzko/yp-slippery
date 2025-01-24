@@ -18,6 +18,7 @@ const static_images: StaticImages = {
   yahshua_logo: `${static_url}new-ui/img/slippery/yahshua_logo.png`,
   eu_gdpr_logo: `${static_url}new-ui/img/slippery/eu_gdpr_logo.png`,
   iso_27001: `${static_url}new-ui/img/slippery/iso_27001.png`,
+  bg_yp_slippery: `${static_url}new-ui/img/slippery/bg_yp_slippery.png`,
 };
 
 // Change module.exports to export statement

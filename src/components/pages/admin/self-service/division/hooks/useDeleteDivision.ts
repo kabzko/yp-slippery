@@ -15,7 +15,7 @@ async function deleteDivision(divisionId: number) {
       }
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/divisions/division/${divisionId}`,
+      `https://yp3.yahshuasolutions.com/api/divisions/division/${divisionId}/`,
       config
     );
     

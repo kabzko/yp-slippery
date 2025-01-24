@@ -2,7 +2,7 @@ import { FC } from "react";
 import useAddSubUnit from "../hooks/useAddSubUnit";
 import { useForm } from "react-hook-form";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/toast/CustomToast";
 import useGetSubUnitData from "../hooks/useGetSubUnit";
 
 interface ModalProps {

@@ -12,7 +12,7 @@ async function updateSubUnit(data: subUnitType) {
       body: JSON.stringify(data),
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/sub-units/sub-unit/${data.id}`,
+      `https://yp3.yahshuasolutions.com/api/sub-units/sub-unit/${data.id}/`,
       config
     );
     if (!res.ok) {
