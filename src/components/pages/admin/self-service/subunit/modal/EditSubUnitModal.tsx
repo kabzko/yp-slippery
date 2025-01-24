@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import { useContext, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { SelfServiceContext } from "../../../../../contexts";
+import { SelfServiceContext } from "@/components/contexts";
 import { useQueryClient } from '@tanstack/react-query';
 import useUpdateSubUnit from "../hooks/useUpdateSubUnit";
 

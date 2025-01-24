@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import CustomToast from '../../../../Toast/CustomToast';
+import CustomToast from '@/components/Toast/CustomToast';
 
 interface Props {
 	isOpen: boolean;
@@ -85,3 +85,4 @@ export default function PlsDownload({ isOpen, onClose }: Props) {
 		</>
 	);
 }
+

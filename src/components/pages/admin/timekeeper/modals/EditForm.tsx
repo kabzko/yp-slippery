@@ -1,14 +1,14 @@
 import * as Yup from 'yup';
 import MultiSelect from '../MultiSelect';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { AccountContext } from '../../../../contexts';
+import { AccountContext } from '@/components/contexts'; 
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import useGetLocationData from '../../self-service/location/hooks/Location/useGetLocationData';
 import useGetDepartmentData from '../../self-service/location/hooks/Department/useGetDepatmentData';
 import useUpdateAccount from '../hooks/useUpdateAccount';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import CustomToast from '../../../../Toast/CustomToast';
+import CustomToast from '@/components/Toast/CustomToast';
 
 interface ModalProps {
 	isOpen: boolean;

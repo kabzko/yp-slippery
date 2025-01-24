@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { UnfoldMoreSharp } from "@mui/icons-material";
+import { MdUnfoldMore } from "react-icons/md";
 import axios from "axios";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../Toast/CustomToast";
-import classNames from "../../../../../helpers/classNames";
+import CustomToast from "@/components/Toast/CustomToast";
+import classNames from "@/helpers/classNames";
 
 interface TemplatePreviewProps {
 	isOpen: boolean;
@@ -189,13 +189,13 @@ const previewTable = (typeClick: any) => {
 									<th className="th-outer">
 										<div className="flex flex-row justify-center items-center space-x-1.5">
 											<p className="text-xs font-semibold">Date</p>
-											<span className="text-blue-600"><UnfoldMoreSharp /></span>
+											<span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
 										</div>
 									</th>
 									<th className="th-outer">
 										<div className="flex flex-row justify-center items-center space-x-1.5">
 											<p className="text-xs font-semibold">Employee ID</p>
-											<span className="text-blue-600"><UnfoldMoreSharp /></span>
+											<span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
 										</div>
 									</th>
 									<th className="th-outer">
@@ -214,13 +214,13 @@ const previewTable = (typeClick: any) => {
 									<th className="th-outer">
 										<div className="flex flex-row justify-center items-center space-x-1.5">
 											<p className="text-xs font-semibold">Date</p>
-											<span className="text-blue-600"><UnfoldMoreSharp /></span>
+											<span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
 										</div>
 									</th>
 									<th className="th-outer">
 										<div className="flex flex-row justify-center items-center space-x-1.5">
 											<p className="text-xs font-semibold">Employee ID</p>
-											<span className="text-blue-600"><UnfoldMoreSharp /></span>
+											<span className="text-blue-600"><MdUnfoldMore className="w-4 h-4" /></span>
 										</div>
 									</th>
 									<th className="th-outer">

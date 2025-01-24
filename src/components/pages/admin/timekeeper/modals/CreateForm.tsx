@@ -3,12 +3,12 @@ import MultiSelect from '../../timekeeper/MultiSelect';
 import useGetDepartmentData from '../../self-service/location/hooks/Department/useGetDepatmentData';
 import useGetLocationData from '../../self-service/location/hooks/Location/useGetLocationData';
 import { FormTooltip } from '../Tooltip';
-import { TimekeeperContext } from '../../../../contexts';
+import { TimekeeperContext } from '@/components/contexts';
 import useAddAccount from '../hooks/useAddAccount'
 import { useQueries, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useContext } from "react";
 import toast from 'react-hot-toast';
-import CustomToast from '../../../../Toast/CustomToast';
+import CustomToast from '@/components/Toast/CustomToast';
 
 interface ModalProps {
   isOpen: boolean;

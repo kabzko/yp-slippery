@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import useDeleteLocation from "../hooks/Location/useDeleteLocation";
 import useDeleteDepartment from "../hooks/Department/useDeleteDepartment";
 import useDeletePosition from "../hooks/Position/useDeletePosition";

@@ -9,7 +9,7 @@ async function deleteEmploymentType(employmentTypeId: number) {
         'Content-Type': 'application/json',
       }
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/employement-types/employement-type/${employmentTypeId}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/employement-types/employement-type/${employmentTypeId}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

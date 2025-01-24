@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../Toast/CustomToast";
-import Upload from "../../../../modal/Upload";
+import CustomToast from "@/components/Toast/CustomToast";
+import Upload from "@/components/modal/Upload";
 import DeleteModal from "./modal/DeleteModal";
 import EditUnitModal from "./modal/EditUnitModal";
-import useGetTimeData from "../../../../hooks/useGetTime";
+import useGetTimeData from "@/components/hooks/useGetTime";
 import CreateUnitModal from "./modal/CreateUnitModal";
 import useGetUnitsData  from "./hooks/useGetUnitData";
-import { SelfServiceContext } from "../../../../contexts";
+import { SelfServiceContext } from "@/components/contexts"; 
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { FaTrash } from "react-icons/fa";
 import { RiPencilFill } from "react-icons/ri";
@@ -16,7 +16,7 @@ import { RiPencilFill } from "react-icons/ri";
 const Unit = () => {
   const [ currentPage, setCurrentPage ] = useState(1);
   const [ pageSize ] = useState(10);
-  const { data: unitsData, refetch } = useGetUnitsData(currentPage, pageSize);
+  const { data: unitsData, refetch, isLoading } = useGetUnitsData(currentPage, pageSize);
   const { selectedRows, setSelectedRows } = useContext(SelfServiceContext);
   const { data: timeData } = useGetTimeData();
   const [ deleteModal, setDeleteModal ] = useState(false)
@@ -146,13 +146,30 @@ const Unit = () => {
 
   return (
     <>
-      <Upload fields={["Units"]} isOpen={openUploadModal} onClose={closeUpload} />
+      <Upload
+        fields={["Name"]}
+        isOpen={openUploadModal}
+        onClose={closeUpload}
+        module="unit"
+      />
       <CreateUnitModal isOpen={isModalOpen} onClose={closeModal} />
-      <EditUnitModal unit={selectedUnit} isOpen={editModal} onClose={closeEditModal} />
-      <DeleteModal unit={selectedUnit} isOpen={deleteModal} onClose={closeDeleteModal} />
-      <div className="flex pr-10 space-x-4" style={{ alignSelf: 'end' }}>
-        <div className="flex relative group sm:mb-2">
-          <button id="downloadbtn" onClick={handleDownload} className="whitespace-nowrap text-[#2757ED] bg-white border border-[#2757ED] font-bold py-2 px-6 rounded-lg inline-flex items-center">
+      <EditUnitModal
+        unit={selectedUnit}
+        isOpen={editModal}
+        onClose={closeEditModal}
+      />
+      <DeleteModal
+        unit={selectedUnit}
+        isOpen={deleteModal}
+        onClose={closeDeleteModal}
+      />
+      <div className="flex pr-10 space-x-4" style={{ alignSelf: "end" }}>
+        <div className="relative flex group sm:mb-2">
+          <button
+            id="downloadbtn"
+            onClick={handleDownload}
+            className="whitespace-nowrap text-[#2757ED] bg-white border border-[#2757ED] font-bold py-2 px-6 rounded-lg inline-flex items-center"
+          >
             <svg
               width="15"
               height="17"
@@ -169,8 +186,17 @@ const Unit = () => {
           </button>
           <span className="absolute z-40 w-fit top-12 scale-0 rounded-lg bg-[#344960] text-white p-4 text-xs  group-hover:scale-100 flex">
             <span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z" fill="white" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z"
+                  fill="white"
+                />
               </svg>
             </span>
             <h1 className="ml-2 text-sm font-bold">
@@ -178,8 +204,12 @@ const Unit = () => {
             </h1>
           </span>
         </div>
-        <div className="flex relative group sm:mb-2">
-          <button id="uploadbtn" onClick={openUpload} className="whitespace-nowrap text-[#2757ED] bg-white border border-[#2757ED] font-bold py-2 px-6 rounded-lg inline-flex items-center">
+        <div className="relative flex group sm:mb-2">
+          <button
+            id="uploadbtn"
+            onClick={openUpload}
+            className="whitespace-nowrap text-[#2757ED] bg-white border border-[#2757ED] font-bold py-2 px-6 rounded-lg inline-flex items-center"
+          >
             <svg
               width="15"
               height="18"
@@ -196,8 +226,17 @@ const Unit = () => {
           </button>
           <span className="absolute z-40 w-[200px] top-12 scale-0 rounded-lg bg-[#344960] p-4 text-xs text-white group-hover:scale-100 flex">
             <span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z" fill="white" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z"
+                  fill="white"
+                />
               </svg>
             </span>
             <h1 className="ml-2 text-sm font-bold">
@@ -207,12 +246,10 @@ const Unit = () => {
         </div>
       </div>
       <div className="xl:w-full bg-white mx-20 rounded-[10px] shadow-md w-3/4 border-2">
-        <div className="mx-14 border-b-2 xl:flex border-stone-700 lg:max-w-full xl:justify-between lg:grid-col">
+        <div className="border-b-2 mx-14 xl:flex border-stone-700 lg:max-w-full xl:justify-between lg:grid-col">
           <div className="flex">
-            <h1 className="my-5 ml-5 text-3xl font-bold">
-              Unit
-            </h1>
-            <div className="flex relative my-7 ml-5 group">
+            <h1 className="my-5 ml-5 text-3xl font-bold">Unit</h1>
+            <div className="relative flex ml-5 my-7 group">
               <svg
                 width="21"
                 height="21"
@@ -225,31 +262,48 @@ const Unit = () => {
                   fill="#373530"
                 />
               </svg>
-              <span className="absolute scale-0 w-[400px] rounded-lg drop-shadow-lg border border-[#ACB9CB] bg-slate-400 p-2 pl-4 text-sm text-black font-bold group-hover:scale-100" style={{ bottom: '40px', left: '-200px' }}>List every unit for your business.</span>
+              <span
+                className="absolute scale-0 w-[400px] rounded-lg drop-shadow-lg border border-[#ACB9CB] bg-slate-400 p-2 pl-4 text-sm text-black font-bold group-hover:scale-100"
+                style={{ bottom: "40px", left: "-200px" }}
+              >
+                List every unit for your business.
+              </span>
             </div>
           </div>
-          <div className="flex-auto self-end" style={{ textAlign: 'end' }}>
-            <button onClick={openModal} id="addbtn" className="mb-4 px-6 py-2 rounded-lg text-white bg-[#2757ED] disabled:bg-gray-300 disabled:text-gray-500">
+          <div className="self-end flex-auto" style={{ textAlign: "end" }}>
+            <button
+              onClick={openModal}
+              id="addbtn"
+              className="mb-4 px-6 py-2 rounded-lg text-white bg-[#2757ED] disabled:bg-gray-300 disabled:text-gray-500"
+            >
               Create
             </button>
           </div>
         </div>
         <div className="flex flex-col mx-14 lg:grid">
-          <div className="overflow-auto max-h-64 bg-white rounded">
+          <div className="overflow-auto bg-white rounded max-h-64">
             <table className="w-full border-b-2 table-auto">
               <thead className="sticky top-0 text-xs uppercase bg-white border-b-2">
                 <tr>
                   <th scope="col" className="px-3 py-3.5">
-                    <input 
+                    <input
                       type="checkbox"
                       onChange={handleSelectedAll}
-                      checked={selectedRows?.length === (sortedData?.length || 0)}
+                      checked={
+                        sortedData?.length > 0 &&
+                        selectedRows?.length === sortedData?.length &&
+                        selectedRows?.length > 0
+                      }
+                      // disabled={sortedData?.length === 0}
                     />
                   </th>
                   <th scope="col" className="px-3 py-3.5">
-                    <div className="flex justify-center items-center">
+                    <div className="flex items-center justify-center">
                       <h1 className="text-black">Name</h1>
-                      <button disabled={unitsData?.units?.length === 0} onClick={() => handleSort('name')}>
+                      <button
+                        disabled={unitsData?.units?.length === 0}
+                        onClick={() => handleSort("name")}
+                      >
                         <svg
                           className="w-3 h-3 ms-1.5 text-blue-600"
                           aria-hidden="true"
@@ -270,7 +324,9 @@ const Unit = () => {
                       <h1>Action</h1>
                       {selectedRows.length > 1 && (
                         <div onClick={openDeleteModal}>
-                          <p className="text-xs text-red-500 underline">Delete Selected</p>
+                          <p className="text-xs text-red-500 underline">
+                            Delete Selected
+                          </p>
                         </div>
                       )}
                     </div>
@@ -278,68 +334,92 @@ const Unit = () => {
                 </tr>
               </thead>
               <tbody>
-                {sortedData?.length > 0 ? sortedData.map((unit: any) => (
-                  <tr key={unit.id} className="p-4 text-center border-b border-blue-gray-50">
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(unit.id)}
-                        onChange={(e) => handleSelected(e, unit)}
-                      />
-                    </td>
-                    <td className="py-1">
-                      {unit.name}
-                    </td>
-                    <td className="py-1">
-                      <div className="flex justify-center space-x-2">
-                        <button 
-                          onClick={() => { setSelectedUnit([unit]); setSelectedRows([unit.id]); openEditModal(); }} 
-                          id="editbtn" 
-                          className="p-2 text-gray-600 hover:text-blue-600 rounded-md border-2 border-gray-600 hover:border-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
-                          disabled={selectedRows.length > 1}
-                        >
-                           <RiPencilFill size={17} />
-                        </button>
-                        <button 
-                          onClick={() => { setSelectedUnit([unit]); setSelectedRows([unit.id]); openDeleteModal(); }} 
-                          id="deletebtn" 
-                          className="p-2 text-red-600 hover:text-red-800 rounded-md border-2 border-red-600 hover:border-red-800"
-                          >
-                            <FaTrash size={17} />
-                        </button>
-                      </div>
+                {isLoading ? (
+                  <tr className="p-4 text-center border-b border-blue-gray-50">
+                    <td colSpan={3} className="py-1">
+                      <p className="p-2">Loading...</p>
                     </td>
                   </tr>
-                )) : (
+                ) : sortedData?.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="text-center p-4 border-b border-blue-gray-50">
+                    <td
+                      colSpan={3}
+                      className="p-4 text-center border-b border-blue-gray-50"
+                    >
                       No data available
                     </td>
                   </tr>
+                ) : (
+                  sortedData.map((unit: any) => (
+                    <tr
+                      key={unit.id}
+                      className="p-4 text-center border-b border-blue-gray-50"
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(unit.id)}
+                          onChange={(e) => handleSelected(e, unit)}
+                        />
+                      </td>
+                      <td className="py-1">{unit.name}</td>
+                      <td className="py-1">
+                        <div className="flex justify-center space-x-2">
+                          <button
+                            onClick={() => {
+                              setSelectedUnit([unit]);
+                              setSelectedRows([unit.id]);
+                              openEditModal();
+                            }}
+                            id="editbtn"
+                            className="p-2 text-gray-600 border-2 border-gray-600 rounded-md hover:text-blue-600 hover:border-blue-600 disabled:bg-gray-300 disabled:text-gray-500"
+                            disabled={selectedRows.length > 1}
+                          >
+                            <RiPencilFill size={17} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedUnit([unit]);
+                              setSelectedRows([unit.id]);
+                              openDeleteModal();
+                            }}
+                            id="deletebtn"
+                            className="p-2 text-red-600 border-2 border-red-600 rounded-md hover:text-red-800 hover:border-red-800"
+                          >
+                            <FaTrash size={17} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 )}
               </tbody>
             </table>
           </div>
           <div className="flex flex-row justify-between mx-5 my-5">
             <div className="flex items-center">
-              <h1>
-                Total Record/s: {unitsData?.units?.length || 0}
-              </h1>
+              <h1>Total Record/s: {unitsData?.units?.length || 0}</h1>
             </div>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <span>Record per page: {pageSize}</span>
-              <button 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-50"
               >
                 <MdKeyboardArrowLeft size={20} />
               </button>
               <span className="text-blue-500">{currentPage}...</span>
-              <button 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, unitsData?.pagination.total_pages || 1))}
-                disabled={currentPage === (unitsData?.pagination.total_pages || 1)}
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(prev + 1, unitsData?.pagination.total_pages || 1)
+                  )
+                }
+                disabled={
+                  currentPage === (unitsData?.pagination.total_pages || 1)
+                }
                 className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-50"
               >
                 <MdKeyboardArrowRight size={20} />

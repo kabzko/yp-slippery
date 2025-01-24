@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Combobox } from '@headlessui/react';
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { HiChevronUpDown } from "react-icons/hi2";
 
 interface SelectedState {
 	location: string[];
@@ -55,10 +55,7 @@ export default function MultiSelect({
 						displayValue={(items: string[]) => items.join(', ')}
 					/>
 					<Combobox.Button className="flex absolute inset-y-0 right-0 items-center pr-2">
-						<ChevronUpDownIcon
-							className="w-5 h-5 text-gray-400"
-							aria-hidden="true"
-						/>
+						<HiChevronUpDown className="h-5 w-5 text-gray-400" aria-hidden="true" />
 					</Combobox.Button>
 				</div>
 				<Combobox.Options className="overflow-auto absolute py-1 mt-1 w-full max-h-60 text-base bg-white rounded-md ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none sm:text-sm">

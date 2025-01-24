@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { FC, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import useUpdateLocation from "../hooks/Location/useUpdateLocation";
 import useUpdateDepartment from "../hooks/Department/useUpdateDepartment";
 import useUpdatePosition from "../hooks/Position/useUpdatePosition";

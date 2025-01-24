@@ -1,17 +1,19 @@
-import { useState, useContext } from 'react';
-import Saly from '../../../../assets/Saly-9.png'
-import SalyShadow from '../../../../assets/Saly-9 (1).png';
-import SalyDog from '../../../../assets/Saly-18.png';
-import SalydogShadow from '../../../../assets/Saly-18 (1).png';
-import industry from '../../../../helpers/industry';
+import React, { useState, useContext } from 'react';
+import Saly from '@/assets/Saly-9.png';
+import SalyShadow from '@/assets/Saly-9 (1).png';
+import SalyDog from '@/assets/Saly-18.png';
+import SalydogShadow from '@/assets/Saly-18 (1).png';
+import industry from '@/helpers/industry';
 import Modal from './modals/Modal';
-import useAddCompanyIndustry  from './hooks/useAddCompanyIndustry';
-import classNames from '../../../../helpers/classNames';
-import { ProgressIndicatorContext } from '../../../contexts';
+import useAddCompanyIndustry from './hooks/useAddCompanyIndustry';
+import classNames from '@/helpers/classNames';
+import { ProgressIndicatorContext } from '@/components/contexts'; 
 import { useForm } from 'react-hook-form';
-import SkipProcessModal from '../../../modal/SkipModal';
+import SkipProcessModal from '@/components/modal/SkipModal';
 import toast from 'react-hot-toast';
-import CustomToast from "../../../Toast/CustomToast"
+import CustomToast from '@/components/Toast/CustomToast';
+import LazyImage from '@/components/common/LazyImage';
+import { Lazy } from 'yup';
 
 interface IndustryItem {
   id: string;
@@ -19,7 +21,7 @@ interface IndustryItem {
   name: string;
 }
 
-export default function Content () {
+export default function Content() {
   const [skipModalState, setSkipModalState] = useState(false);
   const { progressState, progressDispatch, skippedProgress } = useContext(ProgressIndicatorContext);
   const { mutate: createIndustry, isPending } = useAddCompanyIndustry();
@@ -92,14 +94,14 @@ export default function Content () {
         <div className="w-full h-16 absolute bottom-[10px] opacity-40 bg-gradient-to-r from-blue-600 to-sky-300 rounded-full blur-[50px]" />
         <div className="absolute bottom-0 left-0">
           <div className="relative">
-            <img src={Saly} alt="FaceBook" className="w-[700px] h-[700px]" />
-            <img src={SalyShadow} alt="FaceBook"  className="w-[766px] h-[77px]" />
+            <LazyImage src={Saly} alt="FaceBook" className="w-[700px] h-[700px]" />
+            <LazyImage src={SalyShadow} alt="FaceBook"  className="w-[766px] h-[77px]" />
           </div>
         </div>
         <div className="absolute bottom-0 right-[300px]">
           <div className="relative">
-            <img src={SalyDog} alt="FaceBook" className="w-[220.96px] h-[220.96px]" />
-            <img src={SalydogShadow} alt="FaceBook" className="w-[225.06px] h-[64.23px]" />
+            <LazyImage src={SalyDog} alt="FaceBook" className="w-[220.96px] h-[220.96px]" />
+            <LazyImage src={SalydogShadow} alt="FaceBook" className="w-[225.06px] h-[64.23px]" />
           </div>
         </div>
 
@@ -128,57 +130,56 @@ export default function Content () {
               YAHSHUA Payroll Online
             </h1>
           </div>
-          <Modal isOpen={modalOpen} onClose={closeModal} selectedIndustry={searchTerm} />
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="px-48">
-              <div className="border border-stone-700 py-24 bg-white rounded-[30px] shadow px-12">
-                <div className="relative">
-                  <IndustryDropdown onChange={handleInputChange} />
+        <Modal isOpen={modalOpen} onClose={closeModal} selectedIndustry={searchTerm} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="px-48">
+            <div className="border border-stone-700 py-24 bg-white rounded-[30px] shadow px-12">
+              <div className="relative">
+                <IndustryDropdown onChange={handleInputChange} />
+              </div>
+              {searchTerm !== "" && (
+                <div className="absolute mt-2 bg-white rounded shadow-lg z-20 w-[1059px] overflow-hidden">
+                  <ul>
+                    {filteredResults.map((item) => (
+                      <li
+                        key={item.id}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleItemClick(item.name)} >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                {searchTerm !== "" && (
-                  <div className="absolute mt-2 bg-white rounded shadow-lg z-20 w-[1059px] overflow-hidden">
-                    <ul>
-                      {filteredResults.map((item) => (
-                        <li
-                          key={item.id}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => handleItemClick(item.name)} >
-                          {item.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <div className="relative flex items-center justify-between pt-16">
-                  <button className="w-[200px] h-[45px] text-blue-600 bg-white border-blue-600 border focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[10px] text-sm px-5 py-2.5 text-center">
-                    Back
+              )}
+              <div className="relative flex items-center justify-between pt-16">
+                <button className="w-[200px] h-[45px] text-blue-600 bg-white border-blue-600 border focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-[10px] text-sm px-5 py-2.5 text-center">
+                  Back
+                </button>
+                <div className="flex space-x-3">
+                  <button className="font-semibold text-blue-600 underline" onClick={handleSkipProcess}>
+                    I'll do this later.
                   </button>
-                  <div className="flex space-x-3">
-                    <button className="font-semibold text-blue-600 underline" onClick={handleSkipProcess}>
-                      I'll do this later.
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={!searchTerm}
-                      onClick={openModal}
-                      className={classNames('w-[200px] h-[45px] font-semibold rounded-[10px] text-sm px-5 py-2.5 text-center', searchTerm === '' ? 'text-white bg-slate-600' : 'text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-300')} >
-                      Next
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={!searchTerm}
+                    onClick={openModal}
+                    className={classNames('w-[200px] h-[45px] font-semibold rounded-[10px] text-sm px-5 py-2.5 text-center', searchTerm === '' ? 'text-white bg-slate-600' : 'text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-300')} >
+                    Next
+                  </button>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-    </ >
+    </div>
+    </>
   );
 };
 
-// Updated the onChange type to React.ChangeEvent<HTMLSelectElement>
 const IndustryDropdown = ({ onChange }: { onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void }) => {
   return (
-    < >
+    <>
       <select
         onChange={onChange}
         className="block appearance-none w-full h-[85px] bg-neutral-100 rounded-[20px] p-4 pl-8 text-2xl text-black placeholder-black min-w-max"
@@ -209,6 +210,9 @@ const IndustryDropdown = ({ onChange }: { onChange: (event: React.ChangeEvent<HT
           />
         </svg>
       </div>
-    </ >
+    </>
   );
 };
+
+
+

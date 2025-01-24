@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ChevronRightRounded, ChevronLeftRounded } from "@mui/icons-material";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { AccountContext } from "../../../contexts";
 
 export default function TPagination() {
@@ -20,11 +20,11 @@ export default function TPagination() {
 			<p>Record per page: <span className="ml-5 font-semibold">10</span></p> 
       <div className="flex flex-row items-center space-x-4">
         <button onClick={handlePrevTPage}>
-          <ChevronLeftRounded />
+          <MdChevronLeft className="h-5 w-5" aria-hidden="true" />
         </button>
         <p className="font-semibold text-blue-700">{currentPage}</p>
         <button onClick={handleNextTPage}>
-          <ChevronRightRounded />
+          <MdChevronRight className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
     </div>

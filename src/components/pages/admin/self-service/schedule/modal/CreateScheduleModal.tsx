@@ -1,15 +1,17 @@
 import toast from "react-hot-toast";
-import CustomToast from "../../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 import { FC, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import SettingsIcon from "@mui/icons-material/Settings";
-import classNames from "../../../../../../helpers/classNames";
-import useTagRestday from "../../../../../hooks/useTagRestDay";
+import { IoSettingsSharp } from "react-icons/io5";
+import classNames from "@/helpers/classNames";
+import useTagRestday from "@/components/hooks/useTagRestDay";
 import useAddSchedule from "../hooks/useAddSchedule";
+import useGetScheduleData from '../hooks/useGetScheduleData';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  refetch?: () => void;
 }
 
 interface FormData {
@@ -25,12 +27,9 @@ interface FormData {
   }[];
 }
 
-const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
+const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose, refetch }) => {
   const modalClassName = isOpen ? "block absolute z-10" : "hidden";
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputRestday, setInputRestday] = useState("");
-  // const [isFlexibleHoursChecked, setIsFlexibleHoursChecked] = useState(false); // State for Flexible Hours
-  // const [isFixedHoursChecked, setIsFixedHoursChecked] = useState(false); // State for Fixed Hours
   const { } =
     useTagRestday(inputRestday, setInputRestday);
   const [isScheduleSettingsOpen, setIsScheduleSettingsOpen] = useState(false);
@@ -65,6 +64,7 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
     { breakfrom: string; breakto: string }[]
   >([]);
 
+  const { refetch: refetchScheduleData } = useGetScheduleData(1, 10);
 
   const showToast = (message: string, type: string) => {
     toast.custom(() => <CustomToast message={message} type={type} />, {
@@ -90,7 +90,6 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
 
     let breakHours = 0;
     if (scheduleSettings.isBreakTimeChecked && scheduleSettings.isFixedHoursChecked) {
-      // Slice break_details array to match the number of breaks
       if (data.break_details && scheduleSettings.breaks) {
         data.break_details = data.break_details.slice(0, scheduleSettings.breaks);
       }
@@ -170,22 +169,32 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  const handleSaveSettings = () => {
-    const breakType = scheduleSettings.isFixedHoursChecked
-      ? "fixed"
-      : scheduleSettings.isFlexibleHoursChecked
-      ? "flexible"
-      : "nobreak";
+  const handleSaveSettings = async () => {
+    try {
+      const breakType = scheduleSettings.isFixedHoursChecked
+        ? "fixed"
+        : scheduleSettings.isFlexibleHoursChecked
+        ? "flexible"
+        : "nobreak";
 
-    setScheduleSettings((prev) => ({
-      ...prev,
-      flexible_time: scheduleSettings.flexible_time,
-      breaks: scheduleSettings.breaks,
-      breakhours: scheduleSettings.breakhours,
-      break_type: breakType,
-    }));
-    console.log("Saved Settings:", scheduleSettings);
-    setIsScheduleSettingsOpen(false);
+      setScheduleSettings((prev) => ({
+        ...prev,
+        flexible_time: scheduleSettings.flexible_time,
+        breaks: scheduleSettings.breaks,
+        breakhours: scheduleSettings.breakhours,
+        break_type: breakType,
+      }));
+      console.log("Saved Settings:", scheduleSettings);
+      setIsScheduleSettingsOpen(false);
+      if (refetch && typeof refetch === 'function') {
+        await refetch();
+      }
+      if (refetchScheduleData && typeof refetchScheduleData === 'function') {
+        await refetchScheduleData();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // Add state for error messages
@@ -225,14 +234,14 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
                         </svg>
                       </button>
                     </div>
-                    <div className="flex justify-end px-4 py-2">
+                    <div className="flex justify-end px-4 py-2 ">
                       <div
                         onClick={() => setIsScheduleSettingsOpen(true)}
-                        className="cursor-pointer"
+                        className="cursor-pointer border-2 p-2"
                       >
                         {" "}
                         {/* Open ScheduleSettings modal on click */}
-                        <SettingsIcon />
+                        <IoSettingsSharp className="w-6 h-6" />
                       </div>
                     </div>
                     <div className="px-4 py-4 mx-6">
@@ -671,8 +680,8 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-row-reverse justify-between pt-5">
-                      <span className="flex w-full rounded-md shadow-sm sm:w-auto">
+                    <div className="px-10 pt-10 mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                         <button
                           type="submit"
                           className="inline-flex px-2 justify-center w-full rounded-md border border-transparent py-2 bg-[#355FD0] text-base leading-6 font-bold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
@@ -681,7 +690,7 @@ const CreateScheduleModal: FC<ModalProps> = ({ isOpen, onClose }) => {
                           Save Settings
                         </button>
                       </span>
-                      <span className="flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                      <span className="flex mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                         <button
                           type="button"
                           className="cancel-upload-csv-btn"

@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { AccountContext } from "../../../../contexts";
+import { AccountContext } from "@/components/contexts"; 
 import useDeleteAccount from "../hooks/useDeleteAccount";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import CustomToast from "../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 
 interface DeleteModalProps {
   isOpen: boolean;

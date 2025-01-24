@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import classNames from '../../../../helpers/classNames';
+import classNames from '@/helpers/classNames';
 
 interface FormTooltipProps {
 	id: string;

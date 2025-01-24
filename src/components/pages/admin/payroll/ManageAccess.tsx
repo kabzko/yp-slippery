@@ -1,9 +1,10 @@
 import {  useEffect, useState } from "react";
-import PayrollPH from "../../../../assets/payroll-ph-img.png";
-import SproutSolutions from "../../../../assets/sprout-solutions-logo.png";
-import Zoho from "../../../../assets/zoho-payroll.png";
-import ADP from "../../../../assets/ADP-Logo.png";
-import YPO from "../../../../assets/yahshua-payroll-logo.png"
+import PayrollPH from "@/assets/payroll-ph-img.png";
+import SproutSolutions from "@/assets/sprout-solutions-logo.png";
+import Zoho from "@/assets/zoho-payroll.png";
+import ADP from "@/assets/ADP-Logo.png";
+import YPO from "@/assets/yahshua-payroll-logo.png"
+import LazyImage from "@/components/common/LazyImage";
 
 type CloudBasedType = {
 	payroll: boolean;
@@ -23,15 +24,15 @@ export default function ManageAccess({ isOpen, onClose, cloudBasedType, handleSy
 	const [text, setText] = useState('');
 	const renderLogo = () => {
 		if (cloudBasedType.payroll) {
-			return <img src={PayrollPH} className="w-full h-6" alt="Payroll.ph logo" />
-		} else if (cloudBasedType.adp) {
-			return <img src={ADP} className="w-10 h-6" alt="ADP® IHCM logo" />
+			return <LazyImage src={PayrollPH} alt="Payroll PH" className="w-32 h-32 object-contain" />;
 		} else if (cloudBasedType.sprout) {
-			return <img src={SproutSolutions} className="w-full h-11" alt="Sprout Solutions logo" />
+			return <LazyImage src={SproutSolutions} alt="Sprout Solutions" className="w-32 h-32 object-contain" />;
 		} else if (cloudBasedType.zoho) {
-			return <img src={Zoho} className="w-9 h-9" alt="Zoho Payroll logo" />
+			return <LazyImage src={Zoho} alt="Zoho" className="w-32 h-32 object-contain" />;
+		} else if (cloudBasedType.adp) {
+			return <LazyImage src={ADP} alt="ADP" className="w-32 h-32 object-contain" />;
 		} else {
-			return null
+			return <LazyImage src={YPO} alt="YPO" className="w-32 h-32 object-contain" />;
 		}
 	}
 
@@ -64,7 +65,7 @@ export default function ManageAccess({ isOpen, onClose, cloudBasedType, handleSy
 										<p className="mb-3.5 font-semibold text-xl">Hey, YAHSHUA Creatives Studio! 👋</p>
 										<div className="flex flex-row space-x-5">
 											<div className="py-6 pl-12 rounded-lg outline outline-1 pr-9">
-												<img src={YPO} className="w-20 h-20" alt="Zoho Payroll logo" />
+												<LazyImage src={YPO} className="w-20 h-20" alt="Yahshua Payroll logo" />
 											</div>
 											<article className="self-center text-3xl font-semibold text-wrap">
 												<p>YAHSHUA Payroll wants</p>

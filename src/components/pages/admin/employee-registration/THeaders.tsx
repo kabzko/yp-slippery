@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { EmployeeContext, EmployeeRegistrationContext } from "../../../contexts";
 import { Employee } from "../../../types";
-import { UnfoldMoreSharp } from "@mui/icons-material";
+import { MdUnfoldMore } from "react-icons/md";
 
 interface registrationLink {
   step: number;
@@ -153,19 +153,19 @@ export default function THeaders({ setRemoveModalState }: THProps) {
       <th className="th-outer">
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Last Name</p>
-          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('last_name')}><UnfoldMoreSharp /></span>
+          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('last_name')}><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <th className="th-outer">
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">First Name</p>
-          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('first_name')}><UnfoldMoreSharp /></span>
+          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('first_name')}><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <th className="th-outer">
         <div className="flex flex-row justify-center items-center space-x-1.5">
           <p className="font-semibold">Email Name</p>
-          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('email')}><UnfoldMoreSharp /></span>
+          <span className="text-blue-600 hover:bg-slate-100 hover:rounded-full" onClick={() => handleSort('email')}><MdUnfoldMore className="w-4 h-4" /></span>
         </div>
       </th>
       <RegistrationLinkHeader

@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDashboardData } from '../../redux/apiSlice';
-import { RootState } from '../../redux/store';
+import { RootState, AppDispatch } from '../../redux/store';
 import { useEffect } from 'react';
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { data, loading, error } = useSelector((state: RootState) => state.api);
 
   useEffect(() => {

@@ -15,7 +15,7 @@ async function updateDepartmentData(data: DepartmentData) {
       },
       body: JSON.stringify(data),
     };
-    const res = await fetch(`https://yp3.yahshuasolutions.com/api/departments/department/${data.id}`, config);
+    const res = await fetch(`https://yp3.yahshuasolutions.com/api/departments/department/${data.id}/`, config);
     if (!res.ok) {
       throw await res.json();
     }

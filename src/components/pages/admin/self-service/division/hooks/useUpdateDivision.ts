@@ -12,7 +12,7 @@ async function updateDivision(data: divisionType) {
       body: JSON.stringify(data), 
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/divisions/division/${data.id}`, config);
+      `https://yp3.yahshuasolutions.com/api/divisions/division/${data.id}/`, config);
 
       if (!res.ok) {
         throw await res.json();

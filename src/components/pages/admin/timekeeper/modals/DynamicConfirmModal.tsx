@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AccountContext, TimekeeperContext } from "../../../../contexts";
 import { TimekeeperAccount } from "../../../../types";
 import toast from 'react-hot-toast';
-import CustomToast from "../../../../Toast/CustomToast";
+import CustomToast from "@/components/Toast/CustomToast";
 
 interface EmailSendConfirmProps {
   isOpen: boolean;

@@ -1,19 +1,38 @@
 import toast from "react-hot-toast";
-import SettingsIcon from "@mui/icons-material/Settings";
-import CustomToast from "../../../../../Toast/CustomToast";
+import { IoSettingsSharp } from "react-icons/io5";
+import CustomToast from "@/components/Toast/CustomToast";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form"; 
-import { SelfServiceContext } from "../../../../../contexts";
+import { SelfServiceContext } from "@/components/contexts";
 import { useQueryClient } from "@tanstack/react-query";
-// import useTagRestday from "../../../../../hooks/useTagRestDay";
-import classNames from "../../../../../../helpers/classNames";
+import classNames from "@/helpers/classNames";
 import useUpdateSchedule from "../hooks/useUpdateSchedule";
+import useGetScheduleData from '../hooks/useGetScheduleData';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: any;
 }
+
+interface ScheduleFormData {
+  id: string;
+  name: string;
+  timein: string;
+  timeout: string;
+  workhours: string;
+  flexible_time: boolean;
+  workdays: number[];
+  breakhours: string;
+  break_type: string;
+  break_details: {
+    breakfrom: string;
+    breakto: string;
+  }[];
+  flexible_breaktime: boolean;
+  fixed_breaktime: boolean;
+}
+
 
 export default function EditScheduleModal({
   data,
@@ -23,48 +42,95 @@ export default function EditScheduleModal({
   const modalClassName = isOpen && data !== null ? "block absolute z-10" : "hidden";
   const { selectedRows, setSelectedRows } = useContext(SelfServiceContext);
   const [inputRestday, setInputRestday] = useState("");
-  // const { tagsRestday, handleKeyDownRestDay, handleRemoveTagRestday } =
-  //   useTagRestday(inputRestday, setInputRestday);
   const queryClient = useQueryClient();
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScheduleSettingsOpen, setIsScheduleSettingsOpen] = useState(false);
-  const [scheduleSettings, setScheduleSettings] = useState({
+  const [oldScheduleSettings, setOldScheduleSettings] = useState({
     flexible_time: false,
+    breaks: 0,
     breakhours: 0.0,
     isFlexibleHoursChecked: false,
     isFixedHoursChecked: false,
     isBreakTimeChecked: false,
   });
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>({});
+  const [scheduleSettings, setScheduleSettings] = useState({
+    flexible_time: data?.flexible_time || false,
+    breaks: data?.breaks || 0,
+    breakhours: data?.breakhours || 0.0,
+    isFlexibleHoursChecked: data?.flexible_breaktime || false,
+    isFixedHoursChecked: data?.fixed_breaktime || false,
+    isBreakTimeChecked: (data?.flexible_breaktime || data?.fixed_breaktime) || false,
+  });
 
-  const { control, handleSubmit, reset, setValue, getValues } =
-    useForm({
-      defaultValues: {
-        old_name: data.name,
-        timein: data.timein,
-        timeout: data.timeout,
-        workhours: data.workhours,
-        flexible_time: data.flexible_time,
-        workdays: data.workdays,
-        breakhours: data.breakhours,
-        break_type: data.break_type,
-      },
-    });
+  const { control, handleSubmit, reset, setValue, getValues } = useForm({
+    defaultValues: {
+      id: data?.id || '',
+      name: data?.name || '',
+      timein: data?.timein || '',
+      timeout: data?.timeout || '',
+      workhours: data?.workhours || '',
+      flexible_time: data?.flexible_time || false,
+      workdays: data?.workdays || [],
+      breakhours: data?.breakhours || '',
+      break_type: data?.break_type || '',
+      break_details: data?.break_details || [
+        {
+          breakfrom: '',
+          breakto: '',
+        },
+      ],
+      flexible_breaktime: data?.flexible_breaktime || false,
+      fixed_breaktime: data?.fixed_breaktime || false,
+    },
+  });
 
-  const [workdays, setWorkdays] = useState<number[]>(getValues("workdays") || []); // Local state for workdays
+  const [workdays, setWorkdays] = useState<number[]>(getValues('workdays') || []); 
+  const [timeInputs, setTimeInputs] = useState<{ breakfrom: string; breakto: string }[]>(
+    data?.break_details || []
+  );
 
   useEffect(() => {
-    setWorkdays(getValues("workdays") || []); // Sync local state with form state
-  }, [getValues("workdays")]); // Watch for changes in workdays
+    setWorkdays(getValues("workdays") || []); 
+  }, [getValues("workdays")]); 
 
   useEffect(() => {
     if (isOpen && data) {
-      reset(data[0]); 
+      reset({
+        id: data.id || "",
+        name: data.name || "",
+        timein: data.timein || "",
+        timeout: data.timeout || "",
+        workhours: data.workhours || "",
+        flexible_time: data.flexible_time || false,
+        workdays: data.workdays || [],
+        breakhours: data.breakhours || "",
+        break_type: data.break_type || "",
+        break_details: data.break_details || [
+          {
+            breakfrom: "",
+            breakto: "",
+          },
+        ],
+        flexible_breaktime: data.flexible_breaktime || false,
+        fixed_breaktime: data.fixed_breaktime || false,
+      });
+      setScheduleSettings({
+        flexible_time: data.flexible_time || false,
+        breaks: data.breaks || 0,
+        breakhours: data.breakhours || 0.0,
+        isFlexibleHoursChecked: data.flexible_breaktime || false,
+        isFixedHoursChecked: data.fixed_breaktime || false,
+        isBreakTimeChecked: (data.flexible_breaktime || data.fixed_breaktime) || false,
+      });
+      setWorkdays(data.workdays || []);
+      setTimeInputs(data.break_details || []);
     }
-  }, [selectedRows, isOpen, data]);
+  }, [isOpen, data, reset]);
 
-  const { mutate, isPending} = useUpdateSchedule();
+  const { mutate, isPending } = useUpdateSchedule();
+  const { refetch } = useGetScheduleData(1, 10);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ScheduleFormData) => {
     if (!data.timein || !data.timeout) {
       toast.custom(
         () => <CustomToast message="Please provide both Time In and Time Out." type="error" />,
@@ -75,7 +141,6 @@ export default function EditScheduleModal({
 
     const timeIn = data.timein.split(":").map(Number);
     const timeOut = data.timeout.split(":").map(Number);
-    const breakHours = Number(scheduleSettings.breakhours) || 0;
 
     if (timeIn.length !== 2 || timeOut.length !== 2) {
       toast.custom(
@@ -83,6 +148,21 @@ export default function EditScheduleModal({
         { duration: 4000 }
       );
       return;
+    }
+
+    let breakHours = 0;
+    if (scheduleSettings.isBreakTimeChecked && scheduleSettings.isFixedHoursChecked) {
+      if (data.break_details && scheduleSettings.breaks) {
+        data.break_details = data.break_details.slice(0, scheduleSettings.breaks);
+      }
+      breakHours = data.break_details?.reduce((total: number, breakTime: { breakfrom: string; breakto: string }) => {
+        const [fromHours, fromMinutes] = breakTime.breakfrom.split(":").map(Number);
+        const [toHours, toMinutes] = breakTime.breakto.split(":").map(Number);
+        const breakDuration = (toHours - fromHours) + (toMinutes - fromMinutes) / 60;
+        return total + breakDuration;
+      }, 0) || 0;
+    } else {
+      breakHours = Number(scheduleSettings.breakhours) || 0;
     }
 
     const totalWorkHours =
@@ -97,7 +177,7 @@ export default function EditScheduleModal({
           () => <CustomToast message={`Hours Per Day Must be ${totalExpectedHours.toFixed(2)} Hours.`} type="error" />,
           { duration: 4000 }
         );
-        return; 
+        return;
       }
     } else if (scheduleSettings.isFixedHoursChecked) {
       const totalExpectedHours = totalWorkHours - breakHours;
@@ -106,7 +186,7 @@ export default function EditScheduleModal({
           () => <CustomToast message={`Hours Per Day Must be ${totalExpectedHours.toFixed(2)} Hours.`} type="error" />,
           { duration: 4000 }
         );
-        return; 
+        return;
       }
     } else {
       if (data.workhours && Number(data.workhours) !== totalWorkHours) {
@@ -114,36 +194,59 @@ export default function EditScheduleModal({
           () => <CustomToast message={`Hours Per Day Must be ${totalWorkHours.toFixed(2)} Hours.`} type="error" />,
           { duration: 4000 }
         );
-        return; 
+        return;
       }
     }
 
     const selectedWorkdays = data.workdays || [];
 
+    const breakTimes = timeInputs.map((input) => ({
+      breakfrom: input.breakfrom,
+      breakto: input.breakto,
+    }));
+
     const submitData = {
-      id: selectedRows[0],
-      ...data,
+      id: data.id,
+      name: data.name,
+      timein: data.timein,
+      timeout: data.timeout,
+      workhours: data.workhours,
+      flexible_time: scheduleSettings.flexible_time,
       workdays: selectedWorkdays,
-      ...scheduleSettings,
+      breakhours: scheduleSettings.breakhours,
+      break_type: scheduleSettings.isFixedHoursChecked ? 'fixed' : scheduleSettings.isFlexibleHoursChecked ? 'flexible' : 'nobreak',
+      break_details: scheduleSettings.isFixedHoursChecked ? breakTimes : [],
     };
 
+    try {
+      console.log('Submitting data:', submitData);
       mutate(submitData, {
-      onSuccess: (data: any) => {
-        queryClient.invalidateQueries({ queryKey: ['schedulesData'] });
-        toast.custom(
-          () => <CustomToast message={data.message} type="success" />,
-          { duration: 4000 }
-        );
-        reset();
-        onClose();
-      },
-      onError: (error: any) => {
-        toast.custom(
-          () => <CustomToast message={error.message} type="error" />,
-          { duration: 4000 }
-        );
-      },
-    });
+        onSuccess: (response) => {
+          console.log('Update successful:', response);
+          queryClient.invalidateQueries({ queryKey: ['schedulesData'] });
+          toast.custom(
+            () => <CustomToast message="Schedule updated successfully" type="success" />,
+            { duration: 4000 }
+          );
+          refetch();
+          onClose();
+          reset();
+        },
+        onError: (error: any) => {
+          console.error('Update failed:', error);
+          toast.custom(
+            () => <CustomToast message={error.message || 'Failed to update schedule'} type="error" />,
+            { duration: 4000 }
+          );
+        },
+      });
+    } catch (error: any) {
+      console.error('Error in form submission:', error);
+      toast.custom(
+        () => <CustomToast message={error.message || 'An error occurred'} type="error" />,
+        { duration: 4000 }
+      );
+    }
   };
 
   const handleClose = () => {
@@ -153,35 +256,28 @@ export default function EditScheduleModal({
   };
 
   const handleSaveSettings = () => {
-    const breakType = scheduleSettings.isFixedHoursChecked
-        ? "fixed"
-        : scheduleSettings.isFlexibleHoursChecked
-        ? "flexible"
-        : "nobreak"; 
+    const submitData = {
+      ...getValues(),
+      flexible_time: scheduleSettings.flexible_time,
+      breakhours: scheduleSettings.breakhours,
+      flexible_breaktime: scheduleSettings.isFlexibleHoursChecked,
+      fixed_breaktime: scheduleSettings.isFixedHoursChecked,
+      break_type: scheduleSettings.isFixedHoursChecked ? 'fixed' : scheduleSettings.isFlexibleHoursChecked ? 'flexible' : 'nobreak',
+    };
 
-    setScheduleSettings((prev) => ({
-        ...prev,
-        flexible_time: scheduleSettings.flexible_time,
-        breakhours: scheduleSettings.breakhours,
-        break_type: breakType, 
-    }));
-
-    console.log("Saved Settings:", scheduleSettings);
-    console.log("Break Type:", breakType);
+    console.log("Saved Settings:", submitData);
     setIsScheduleSettingsOpen(false);
   };
 
   const handleWorkdayChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = index; // Use the index directly
+    const value = index;
 
-    // Create a new array based on the current selection
     const updatedWorkdays = e.target.checked
-      ? [...workdays, value] // Add the day if checked
-      : workdays.filter((day: number) => day !== value); // Remove the day if unchecked
+      ? [...workdays, value] 
+      : workdays.filter((day: number) => day !== value); 
 
-    // Update the workdays state with the new array
-    setWorkdays(updatedWorkdays); // Update local state
-    setValue("workdays", updatedWorkdays); // Update the form state
+    setWorkdays(updatedWorkdays); 
+    setValue("workdays", updatedWorkdays); 
   };
 
   return (
@@ -219,9 +315,9 @@ export default function EditScheduleModal({
                     <div className="flex justify-end px-4 py-2">
                       <div
                         onClick={() => setIsScheduleSettingsOpen(true)}
-                        className="cursor-pointer"
+                        className="cursor-pointer border-2 p-2"
                       >
-                        <SettingsIcon />
+                        <IoSettingsSharp className="w-6 h-6" />
                       </div>
                     </div>
                     <div className="px-4 py-4 mx-6">
@@ -238,7 +334,7 @@ export default function EditScheduleModal({
                                 </label>
                                 <Controller
                                   control={control}
-                                  name="old_name"
+                                  name="name"
                                   render={({ field }) => (
                                     <input
                                       {...field}
@@ -321,7 +417,7 @@ export default function EditScheduleModal({
                               Rest Day
                             </label>
                             <div className="flex flex-col">
-                              {[
+                              {[/* eslint-disable @typescript-eslint/no-shadow */
                                 "Sunday",
                                 "Monday",
                                 "Tuesday",
@@ -334,9 +430,9 @@ export default function EditScheduleModal({
                                   <input
                                     type="checkbox"
                                     id={day}
-                                    value={index} // Corresponding number for the day
-                                    checked={workdays.includes(index)} // Check if the day is selected
-                                    onChange={(e) => handleWorkdayChange(e, index)} // Call the new function
+                                    value={index} 
+                                    checked={workdays.includes(index)} 
+                                    onChange={(e) => handleWorkdayChange(e, index)} 
                                   />
                                   <label htmlFor={day} className="ml-2">
                                     {day}
@@ -420,6 +516,8 @@ export default function EditScheduleModal({
                             setScheduleSettings((prev) => ({
                               ...prev,
                               flexible_time: e.target.checked,
+                              // Disable breaktime if flexible schedule is checked
+                              isBreakTimeChecked: e.target.checked ? false : prev.isBreakTimeChecked,
                             }));
                           }}
                         />
@@ -440,6 +538,8 @@ export default function EditScheduleModal({
                               setScheduleSettings((prev) => ({
                                 ...prev,
                                 isBreakTimeChecked: e.target.checked,
+                                // Disable flexible schedule if breaktime is checked
+                                flexible_time: e.target.checked ? false : prev.flexible_time,
                               }));
                             }}
                           />
@@ -451,104 +551,160 @@ export default function EditScheduleModal({
                           </label>
                         </div>
                         <div className="flex flex-col pl-4 space-y-6">
-                          <div>
-                            <input
-                              type="checkbox"
-                              id="flexible_hours"
-                              checked={scheduleSettings.isFlexibleHoursChecked}
-                              onChange={(e) => {
-                                setScheduleSettings((prev) => ({
-                                  ...prev,
-                                  isFlexibleHoursChecked: e.target.checked,
-                                  isFixedHoursChecked: false,
-                                }));
-                              }}
-                            />
-                            <label
-                              htmlFor="flexible_hours"
-                              className="pl-2 text-sm font-normal"
-                            >
-                              Flexible Hours
-                            </label>
-                            <div
-                              className={classNames(
-                                "mt-2",
-                                scheduleSettings.isFlexibleHoursChecked
-                                  ? "block"
-                                  : "hidden"
-                              )}
-                            >
+                          {scheduleSettings.isBreakTimeChecked && (
+                            <div>
+                              <input
+                                type="checkbox"
+                                id="flexible_hours"
+                                checked={scheduleSettings.isFlexibleHoursChecked}
+                                onChange={(e) => {
+                                  setScheduleSettings((prev) => ({
+                                    ...prev,
+                                    isFlexibleHoursChecked: e.target.checked,
+                                    isFixedHoursChecked: false,
+                                  }));
+                                }}
+                              />
                               <label
                                 htmlFor="flexible_hours"
                                 className="pl-2 text-sm font-normal"
                               >
-                                No. of Hours
+                                Flexible Hours
                               </label>
+                              <div
+                                className={classNames(
+                                  "mt-2",
+                                  scheduleSettings.isFlexibleHoursChecked
+                                    ? "block"
+                                    : "hidden"
+                                )}
+                              >
+                                <label
+                                  htmlFor="flexible_hours"
+                                  className="pl-2 text-sm font-normal"
+                                >
+                                  No. of Hours
+                                </label>
+                                <input
+                                  disabled={/* eslint-disable @typescript-eslint/no-shadow */
+                                    !scheduleSettings.isFlexibleHoursChecked
+                                  }
+                                  type="number"
+                                  placeholder="24"
+                                  value={scheduleSettings.breakhours}
+                                  onChange={(e) => {
+                                    setScheduleSettings((prev) => ({
+                                      ...prev,
+                                      breakhours: Number(e.target.value),
+                                    }));
+                                  }}
+                                  className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {scheduleSettings.isBreakTimeChecked && (
+                            <div>
                               <input
-                                disabled={
-                                  !scheduleSettings.isFlexibleHoursChecked
-                                }
-                                type="number"
-                                placeholder="24"
-                                value={scheduleSettings.breakhours}
+                                type="checkbox"
+                                id="fixed_hours"
+                                checked={scheduleSettings.isFixedHoursChecked}
                                 onChange={(e) => {
                                   setScheduleSettings((prev) => ({
                                     ...prev,
-                                    breakhours: Number(e.target.value),
+                                    isFixedHoursChecked: e.target.checked,
+                                    isFlexibleHoursChecked: false,
                                   }));
                                 }}
-                                className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
                               />
-                            </div>
-                          </div>
-                          <div>
-                            <input
-                              type="checkbox"
-                              id="fixed_hours"
-                              checked={scheduleSettings.isFixedHoursChecked}
-                              onChange={(e) => {
-                                setScheduleSettings((prev) => ({
-                                  ...prev,
-                                  isFixedHoursChecked: e.target.checked,
-                                  isFlexibleHoursChecked: false,
-                                }));
-                              }}
-                            />
-                            <label
-                              htmlFor="fixed_hours"
-                              className="pl-2 text-sm font-normal"
-                            >
-                              Fixed Hours
-                            </label>
-                            <div
-                              className={classNames(
-                                "mt-2",
-                                scheduleSettings.isFixedHoursChecked
-                                  ? "block"
-                                  : "hidden"
-                              )}
-                            >
                               <label
                                 htmlFor="fixed_hours"
                                 className="pl-2 text-sm font-normal"
                               >
-                                No. of Breaks
+                                Fixed Hours
                               </label>
-                              <input
-                                disabled={!scheduleSettings.isFixedHoursChecked}
-                                type="number"
-                                placeholder="24"
-                                value={scheduleSettings.breakhours}
-                                onChange={(e) => {
-                                  setScheduleSettings((prev) => ({
-                                    ...prev,
-                                    breakhours: Number(e.target.value),
-                                  }));
-                                }}
-                                className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
-                              />
+                              <div
+                                className={classNames(
+                                  "mt-2",
+                                  scheduleSettings.isFixedHoursChecked
+                                    ? "block"
+                                    : "hidden"
+                                )}
+                              >
+                                <div className="space-y-4">
+                                  <div>
+                                    <label className="pl-2 text-sm font-normal">
+                                      No. of Breaks
+                                    </label>
+                                    <input
+                                      disabled={!scheduleSettings.isFixedHoursChecked}
+                                      type="number"
+                                      placeholder="1"
+                                      value={scheduleSettings.breaks}
+                                      onChange={(e) => {
+                                        const breaks = parseInt(e.target.value) || 0;
+                                        setScheduleSettings((prev) => ({
+                                          ...prev,
+                                          breaks,
+                                        }));
+                                        // Update timeInputs array based on number of breaks
+                                        setTimeInputs(prevInputs => {
+                                          const newInputs = [...prevInputs];
+                                          while (newInputs.length < breaks) {
+                                            newInputs.push({ breakfrom: '', breakto: '' });
+                                          }
+                                          return newInputs.slice(0, breaks);
+                                        });
+                                      }}
+                                      className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
+                                    />
+                                  </div>
+                                  {timeInputs.map((input, index) => (
+                                    <div key={index} className="flex space-x-4">
+                                      <div className="w-1/2">
+                                        <label className="pl-2 text-sm font-normal">
+                                          From:
+                                        </label>
+                                        <input
+                                          type="text"
+                                          placeholder="HH:MM"
+                                          value={input.breakfrom}
+                                          onChange={(e) => {
+                                            const newInputs = [...timeInputs];
+                                            newInputs[index] = {
+                                              ...newInputs[index],
+                                              breakfrom: e.target.value,
+                                            };
+                                            setTimeInputs(newInputs);
+                                          }}
+                                          className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
+                                        />
+                                      </div>
+                                      <div className="w-1/2">
+                                        <label className="pl-2 text-sm font-normal">
+                                          To:
+                                        </label>
+                                        <input
+                                          type="text"
+                                          placeholder="HH:MM"
+                                          value={input.breakto}
+                                          onChange={(e) => {
+                                            const newInputs = [...timeInputs];
+                                            newInputs[index] = {
+                                              ...newInputs[index],
+                                              breakto: e.target.value,
+                                            };
+                                            setTimeInputs(newInputs);
+                                          }}
+                                          className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -582,25 +738,3 @@ export default function EditScheduleModal({
     </>
   );
 }
-
-const TimeInput = ({ control, name }: { control: any; name: string }) => {
-  return (
-    <>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field }) => (
-          <>
-            <input
-              {...field}
-              className="px-2 border-2 border-[#878787] rounded-[5px] h-[53.57px] w-full"
-              type="text"
-              placeholder="24"
-            />
-          </>
-        )}
-      />
-    </>
-  );
-};
-

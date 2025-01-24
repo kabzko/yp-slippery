@@ -1,23 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import toast from "react-hot-toast";
-import CustomToast from "../../../../Toast/CustomToast";
-import Upload from "../location/modal/UploadModal";
+import CustomToast from "@/components/Toast/CustomToast";
+import Upload from "@/components/modal/Upload";
 import DeleteModal from "./modal/DeleteModal";
 import CreateScheduleModal from "./modal/CreateScheduleModal";
 import EditScheduleModal from "./modal/EditScheduleModal";
-import { SelfServiceContext } from "../../../../contexts";
-import { schedFields } from "../../../../constants";
-import classNames from "../../../../../helpers/classNames";
+import { SelfServiceContext } from "@/components/contexts";
+import { schedFields } from "@/components/constants";
+import classNames from "@/helpers/classNames";
 import useGetScheduleData from "./hooks/useGetScheduleData";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { FaTrash } from "react-icons/fa";
 import { RiPencilFill } from "react-icons/ri";
 
-type ScheduleData = {
-  schedule: any[];
-  total_pages: number;
-  pagination: { total_pages: number }; 
-};
 
 const Schedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,17 +20,14 @@ const Schedule = () => {
   const {
     data: schedulesDatas,
     isLoading,
-    isError,
-    refetch,
   } = useGetScheduleData(currentPage, pageSize);
 
   const { selectedRows, setSelectedRows } = useContext(SelfServiceContext);
-  const [open, setOpen] = useState(true);
+  const [open] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [schedule, setSchedule] = useState("");
-  const [selectedSched, setSelectedSched] = useState<any[] | {}>({});
+  const [selectedSched, setSelectedSched] = useState<any>(null);
   const [openUploadModal, setOpenUploadModal] = useState(false);
 
   type SortConfig = {
@@ -104,9 +96,6 @@ const Schedule = () => {
     console.log({ schedulesDatas });
   }, [schedulesDatas]);
 
-  const handleInputChange = (e: any) => {
-    setSchedule(e.target.value);
-  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -122,8 +111,7 @@ const Schedule = () => {
 
   const closeDeleteModal = () => {
     setDeleteModal(false);
-    setSelectedSched([]);
-    // refetch();
+    setSelectedSched(null);
   };
 
   const openEditModal = () => {
@@ -132,25 +120,25 @@ const Schedule = () => {
 
   const closeEditModal = () => {
     setEditModal(false);
-    setSelectedSched([]);
-    // refetch();
+    setSelectedSched(null);
   };
 
   const handleDeleteSelected = () => {
     if (!schedulesDatas.schedule) return;
     const temp = selectedRows
-      ?.map((id: any) =>
-        schedulesDatas.schedule.find((item: any) => item.id === id)
-      )
-      .filter(Boolean);
+        ?.map((id: any) =>
+            schedulesDatas.schedule.find((item: any) => item.id === id)
+        )
+        .filter(Boolean);
     const newSelectedData = temp?.map((item: any) => ({
-      id: item.id,
-      dataSource: "schedule",
-      value: item.schedule_code,
+        id: item.id,
+        dataSource: "schedule",
+        value: item.old_name,
     }));
+    console.log("Selected Schedule Data:", newSelectedData);
     setSelectedSched(newSelectedData);
     openDeleteModal();
-  };
+};
 
   const handleSelectedAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (schedulesDatas?.schedule?.length > 0) {
@@ -223,6 +211,7 @@ const Schedule = () => {
         fields={schedFields}
         isOpen={openUploadModal}
         onClose={closeUpload}
+        module="schedule"
       />
       <CreateScheduleModal isOpen={isModalOpen} onClose={closeModal} />
       <EditScheduleModal
@@ -342,7 +331,7 @@ const Schedule = () => {
                 />
               </svg>
               <span
-                className="absolute scale-0 w-[400px] rounded-lg drop-shadow-lg border border-[#ACB9CB] bg-slate-400 p-2 pl-4 text-sm text-black font-bold group-hover:scale-100"
+                className="absolute z-40 w-fit top-12 scale-0 rounded-lg bg-[#344960] p-4 text-xs text-white group-hover:scale-100 flex"
                 style={{ bottom: "40px", left: "-200px" }}
               >
                 List every schedule for your business.
@@ -366,7 +355,7 @@ const Schedule = () => {
                 <tr>
                   <th scope="col" className="px-3 py-3.5">
                     <input
-                      // disabled={schedulesDatas?.schedule?.length === 0}
+                      disabled={schedulesDatas?.schedule?.length === 0}
                       type="checkbox"
                       onChange={handleSelectedAll}
                       checked={
@@ -400,111 +389,26 @@ const Schedule = () => {
                   <th scope="col" className="px-3 py-3.5">
                     <div className="flex justify-center items-center">
                       <h1 className="text-black">Time In</h1>
-                      {/* <button
-                        disabled={schedulesDatas?.schedule?.length === 0}
-                        onClick={() => handleSort("timein")}
-                      >
-                        <svg
-                          className="w-3 h-3 ms-1.5 text-blue-600"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                            fill="#2757ED"
-                          />
-                        </svg>
-                      </button> */}
                     </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5">
                     <div className="flex justify-center items-center">
                       <h1 className="text-black">Time Out</h1>
-                      {/* <button
-                        disabled={schedulesDatas?.schedule?.length === 0}
-                        onClick={() => handleSort("timeout")}
-                      >
-                        <svg
-                          className="w-3 h-3 ms-1.5 text-blue-600"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                            fill="#2757ED"
-                          />
-                        </svg>
-                      </button> */}
                     </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5">
                     <div className="flex justify-center items-center">
                       <h1 className="text-black">Restday</h1>
-                      {/* <button
-                        disabled={schedulesDatas?.schedule?.length === 0}
-                        onClick={() => handleSort("workdays")}
-                      >
-                        <svg
-                          className="w-3 h-3 ms-1.5 text-blue-600"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                            fill="#2757ED"
-                          />
-                        </svg>
-                      </button> */}
                     </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5">
                     <div className="flex justify-center items-center">
                       <h1 className="text-black">Flexible Schedule</h1>
-                      {/* <button
-                        disabled={schedulesDatas?.schedule?.length === 0}
-                        onClick={() => handleSort("flexible_time")}
-                      >
-                        <svg
-                          className="w-3 h-3 ms-1.5 text-blue-600"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                            fill="#2757ED"
-                          />
-                        </svg>
-                      </button> */}
                     </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5">
                     <div className="flex justify-center items-center">
                       <h1 className="text-black">Breaktime</h1>
-                      {/* <button
-                        disabled={schedulesDatas?.schedule?.length === 0}
-                        onClick={() => handleSort("breaktime")}
-                      >
-                        <svg
-                          className="w-3 h-3 ms-1.5 text-blue-600"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                            fill="#2757ED"
-                          />
-                        </svg>
-                      </button> */}
                     </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5">
@@ -564,20 +468,20 @@ const Schedule = () => {
                           .join(", ")}
                       </td>
                       <td className="py-1">
-                        {schedule.flexible_time ? "YES" : "NO"}
+                        {schedule.flexible_time ? "Yes" : "No"}
                       </td>
                       <td className="py-1">
                         {schedule.flexible_breaktime ||
                         schedule.fixed_breaktime
-                          ? "YES"
-                          : ""}
+                          ? "Yes"
+                          : "No"}
                       </td>
                       <td className="py-1">
                         <div className="flex justify-center space-x-2">
                           <button
                             disabled={selectedRows.length > 1}
                             onClick={() => {
-                              setSelectedSched([schedule]);
+                              setSelectedSched(schedule); 
                               setSelectedRows([schedule.id]);
                               openEditModal();
                             }}
@@ -592,7 +496,7 @@ const Schedule = () => {
                               setSelectedSched({
                                 id: schedule.id,
                                 dataSource: "schedule",
-                                value: schedule.schedule_code,
+                                value: schedule.old_name,
                               });
                               setSelectedRows([schedule.id]);
                               openDeleteModal();
@@ -608,7 +512,7 @@ const Schedule = () => {
                   ))
                 ) :  (
                   <tr>
-                    <td colSpan={3} className="text-center py-4">No data available.</td>
+                    <td colSpan={8} className="text-center py-4">No data available.</td>
                   </tr>
                 )}
               </tbody>

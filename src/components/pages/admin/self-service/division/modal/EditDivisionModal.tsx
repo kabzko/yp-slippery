@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState, FC } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import CustomToast from "../../../../../Toast/CustomToast";
-import { SelfServiceContext } from "../../../../../contexts";
+import CustomToast from "@/components/Toast/CustomToast";
+import { SelfServiceContext } from "@/components/contexts"; 
 import useUpdateDivision from "../hooks/useUpdateDivision";
-import { divisionType } from "../../../../../../helpers/types/setupSchema";
+import { divisionType } from "@/helpers/types/setupSchema"; 
 import { useQueryClient } from "@tanstack/react-query";
 
 interface DivisionFormData {

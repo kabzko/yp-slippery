@@ -7,11 +7,12 @@ import { useForm, FormProvider } from 'react-hook-form';
 import useAddStatutory from './hooks/useAddStatutory';
 import useAddTax from './hooks/useAddTax';
 import useAddHoliday from './hooks/useAddHoliday';
-import CustomToast from '../../../../components/Toast/CustomToast';
+import CustomToast from '@/components/Toast/CustomToast';
 import toast from 'react-hot-toast';
 import Header from './Header';
 import Footer from './Footer';
-import backgroundImage from '../../../../assets/YPS-OB_bg.png';
+import backgroundImage from '@/assets/YPS-OB_bg.png'
+import { getOptimizedBackgroundUrl } from '@/config/images';
 
 const CompanyPolicyPage = () => {
   const { step } = useContext(PolicyContext);
@@ -82,6 +83,8 @@ const CompanyPolicyPage = () => {
     }
   };
 
+  const optimizedBgUrl = getOptimizedBackgroundUrl(backgroundImage);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col min-h-screen">
@@ -89,7 +92,7 @@ const CompanyPolicyPage = () => {
           <div 
             className="flex flex-grow justify-center content-center p-8" 
             style={{
-              backgroundImage: `url(${backgroundImage})`, 
+              backgroundImage: `url(${optimizedBgUrl})`, 
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
@@ -105,5 +108,3 @@ const CompanyPolicyPage = () => {
 };
 
 export default CompanyPolicyPage;
-
-

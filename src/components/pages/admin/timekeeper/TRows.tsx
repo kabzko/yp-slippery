@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { EmailOutlined, Edit, Delete, Replay, LockResetRounded, KeyOutlined } from "@mui/icons-material";
+import { MdEmail, MdEdit, MdDelete, MdReplay, MdLockReset, MdKey } from "react-icons/md";
 import { TimekeeperContext, AccountContext } from "../../../contexts";
 import { TimekeeperAccount } from "../../../types";
 import CustomToast from "../../../Toast/CustomToast";
@@ -59,7 +59,7 @@ const SendEmailTD = ({ account }: { account: TimekeeperAccount }) => {
         <button type="button" onClick={handleSingleSend} disabled={selectedRows.length > 1}
           className={btnClass}>
           <div className="flex justify-center items-center space-x-2.5">
-            <EmailOutlined />
+            <MdEmail className="w-4 h-4" />
             <p className="max-md:hidden lg:max-2xl:block">{text}</p>
           </div>
         </button>
@@ -69,7 +69,7 @@ const SendEmailTD = ({ account }: { account: TimekeeperAccount }) => {
         <button type="button" disabled={selectedRows.length > 1}
           className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded font-medium outline outline-1 outline-slate-900 text-slate-900 bg-white disabled:outline-black disabled:bg-gray-300`}>
           <div className="flex justify-center items-center space-x-2.5">
-            <Replay />
+            <MdReplay className="w-4 h-4" />
           </div>
         </button>
         <ResendEmailTooltip />
@@ -96,7 +96,7 @@ const ActionsTD = ({ account, setSelectedAccount, setEditFormState, setRemoveMod
             <button disabled={selectedRows.length > 1} onClick={() => { handleUpdate(account) }}
               className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 disabled:outline-black disabled:bg-gray-300`}>
               <div className="flex items-center justify-center">
-                <Edit />
+                <MdEdit className="w-4 h-4" />
               </div>
             </button>
             <EditTooltip />
@@ -113,7 +113,7 @@ const ActionsTD = ({ account, setSelectedAccount, setEditFormState, setRemoveMod
               }}
               className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 outline-red-500 disabled:outline-black disabled:bg-gray-300`}>
               <div className="flex items-center justify-center text-red-500">
-                <Delete />
+                <MdDelete className="w-4 h-4" />
               </div>
             </button>
             <DeleteTooltip />
@@ -159,7 +159,7 @@ const ActionsTD = ({ account, setSelectedAccount, setEditFormState, setRemoveMod
           <button disabled={selectedRows.length > 1} onClick={handleResetSignInAttempts}
             className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 disabled:outline-black disabled:bg-gray-300`}>
             <div className="flex items-center justify-center">
-              <KeyOutlined />
+              <MdKey className="w-4 h-4" />
             </div>
           </button>
           <ResetSignInTooltip />
@@ -168,7 +168,7 @@ const ActionsTD = ({ account, setSelectedAccount, setEditFormState, setRemoveMod
           <button disabled={selectedRows.length > 1} onClick={handleResetPassword}
             className={`px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 disabled:outline-black disabled:bg-gray-300`}>
             <div className="flex items-center justify-center">
-              <LockResetRounded />
+              <MdLockReset className="w-4 h-4" />
             </div>
           </button>
           <ResetPassTooltip />

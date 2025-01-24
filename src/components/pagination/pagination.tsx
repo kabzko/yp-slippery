@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const Pagination = () => {
   return (

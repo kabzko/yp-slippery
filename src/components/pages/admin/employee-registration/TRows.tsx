@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
-import { EmailOutlined, Edit, Delete, Replay, VerifiedOutlined, LockResetRounded, KeyOutlined } from "@mui/icons-material";
+import { FiEdit, FiTrash2, FiMail, FiKey, FiLock, FiRefreshCw, FiCheckCircle } from 'react-icons/fi';
 import { Employee } from "../../../types";
 import { EmployeeContext, EmployeeRegistrationContext } from "../../../contexts";
 import { SendEmailTooltip, ResetSignInTooltip, ResetPassTooltip, ResendEmailTooltip, DeleteTooltip, EditTooltip } from './Tooltip';
 import CustomToast from "../../../Toast/CustomToast";
 import toast from 'react-hot-toast';
 import classNames from "../../../../helpers/classNames";
-import { FiEdit, FiTrash2, FiMail } from 'react-icons/fi';
 import DeleteEmployeeModal from "./modals/DeleteModal";
 import UpdateEmployeeModal from "./modals/UpdateEmployeeProfileModal";
 import UpdateProfileModal from "./modals/UpdateJobInfoModal";
@@ -80,7 +79,7 @@ const SendEmailTD = ({ employee }: { employee: Employee }) => {
         <button type="button" disabled={sentEmailsByID.includes(employee.id)} className={sendClass} onClick={handleSend}>
           <div className="flex justify-center items-center space-x-2.5">
             <p className="max-md:hidden lg:max-2xl:block">{text}</p>
-            <EmailOutlined />
+            <FiMail className="w-5 h-5" />
           </div>
         </button>
         <SendEmailTooltip />
@@ -88,7 +87,7 @@ const SendEmailTD = ({ employee }: { employee: Employee }) => {
       <span className="relative group">
         <button type="button" disabled={!sentEmailsByID.includes(employee.id)} className={resendClass} onClick={handleResend}>
           <div className="flex justify-center items-center space-x-2.5">
-            <Replay />
+            <FiRefreshCw className="w-5 h-5" />
           </div>
         </button>
         <ResendEmailTooltip />
@@ -173,7 +172,7 @@ const ActionsTD = ({ employee, setUpdateEmployeeProfile, setRemoveModalState, se
         <div className="relative group">
           <button disabled={selectedRows.length > 1} onClick={handleResetSignInAttempts} className={btnClass}>
             <div className="flex justify-center items-center">
-              <KeyOutlined />
+              <FiKey className="w-5 h-5" />
             </div>
           </button>
           <ResetSignInTooltip />
@@ -181,7 +180,7 @@ const ActionsTD = ({ employee, setUpdateEmployeeProfile, setRemoveModalState, se
         <div className="relative group">
           <button disabled={selectedRows.length > 1} onClick={handleResetPassword} className={btnClass}>
             <div className="flex justify-center items-center">
-              <LockResetRounded />
+              <FiLock className="w-5 h-5" />
             </div>
           </button>
           <ResetPassTooltip />
@@ -189,7 +188,7 @@ const ActionsTD = ({ employee, setUpdateEmployeeProfile, setRemoveModalState, se
         <div className="relative group">
           <button disabled={selectedRows.length > 1} onClick={() => { handleUpdate(employee) }} className={btnClass}>
             <div className="flex justify-center items-center">
-              <Edit />
+              <FiEdit className="w-5 h-5" />
             </div>
           </button>
           <EditTooltip />
@@ -208,7 +207,7 @@ const ActionsTD = ({ employee, setUpdateEmployeeProfile, setRemoveModalState, se
             }}
             className={classNames('px-2.5 py-2 hover:drop-shadow-md shadow-sm rounded outline outline-1 outline-red-500', selectedRows.length > 1 ? 'bg-gray-300' : 'bg-white')}>
             <div className="flex justify-center items-center text-red-500">
-              <Delete />
+              <FiTrash2 className="w-5 h-5" />
             </div>
           </button>
           <DeleteTooltip />
@@ -294,7 +293,7 @@ const LoadingComponent = ({ step }: { step: number }) => {
               className="flex items-center p-2 px-8 text-gray-600 bg-gray-300 rounded-md border-2 border-gray-400 hover:text-blue-600"
               disabled={step !== 1} 
             >
-              <FiMail size={20}/>
+              <FiMail className="w-5 h-5" />
               Sent
             </button>
           </td>
@@ -306,14 +305,14 @@ const LoadingComponent = ({ step }: { step: number }) => {
               onClick={() => step === 1 ? openUpdateModal() : openUpdateJobModal()}
               className="p-2 text-gray-600 hover:text-blue-600"
             >
-              <FiEdit size={20} />
+              <FiEdit className="w-5 h-5" />
             </button>
           {/* Delete button (red) */}
             <button
               onClick={() => openDeleteModal()}
               className="p-2 text-red-600 hover:text-red-800"
             >
-            <FiTrash2 size={20} />
+            <FiTrash2 className="w-5 h-5" />
             </button>
           </div>
        </td>
@@ -393,7 +392,7 @@ export default function TRows({ completeEmployees, setUpdateEmployeeProfile, set
             </td>
             <td className="relative p-4 text-center border-b border-blue-gray-50 group">
               <span className={classNames('', completeEmployees.includes(employee.id) ? "text-blue-600" : "text-slate-400")}>
-                <VerifiedOutlined />
+                <FiCheckCircle className="w-5 h-5" />
               </span>
               <span className="absolute w-56 top-3.5 scale-0 rounded-lg bg-[#344960] p-4 text-xs text-white group-hover:scale-100 flex -right-52">
                 <p className="text-xs font-normal text-left">

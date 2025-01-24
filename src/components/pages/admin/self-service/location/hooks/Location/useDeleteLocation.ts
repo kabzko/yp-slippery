@@ -10,7 +10,7 @@ async function deleteLocation(locationId: number) {
       }
     };
     const res = await fetch(
-      `https://yp3.yahshuasolutions.com/api/locations/location/${locationId}`,
+      `https://yp3.yahshuasolutions.com/api/locations/location/${locationId}/`,
       config
     );
     if (!res.ok) {
