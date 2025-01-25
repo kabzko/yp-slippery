@@ -83,7 +83,7 @@ export default function Upload({ isOpen, onClose, fields, module }: UploadCSVPro
     if (file == null) return;
 
     const parseFile = (fields: any) => {
-      if (module === 'schedule') {
+      if (module === "schedule") {
         Papa.parse(file, {
           header: true,
           skipEmptyLines: true,
@@ -91,28 +91,7 @@ export default function Upload({ isOpen, onClose, fields, module }: UploadCSVPro
             const dataFields = Object.keys(results?.data[0]);
             const isCorrect = JSON.stringify(dataFields) === JSON.stringify(fields);
             if (isCorrect) {
-              const headerKeys: any = {
-                Code: 'code',
-                'Hours per day': 'workhours',
-                'Time In': 'timein',
-                'Time Out': 'timeout',
-                'Flexible Schedule': 'flexible_schedule',
-                Monday: 'workday_monday',
-                Tuesday: 'workday_tuesday',
-                Wednesday: 'workday_wednesday',
-                Thursday: 'workday_thursday',
-                Friday: 'workday_friday',
-                Saturday: 'workday_saturday',
-                Sunday: 'workday_sunday',
-                Breaktime: 'breaktime',
-                'Break Type (Flexible/Fixed)': 'breaktype',
-                'No. of hours': 'numberofhours',
-                'No. of breaks': 'numberofbreaks',
-                From: 'breakfrom',
-                To: 'breakto',
-                Departments: 'departments',
-                Locations: 'locations',
-              };
+              const headerKeys: any = {"Code":"code","Hours per day":"workhours","Time In":"timein","Time Out":"timeout","Flexible Schedule":"flexible_schedule","Monday":"workday_monday","Tuesday":"workday_tuesday","Wednesday":"workday_wednesday","Thursday":"workday_thursday","Friday":"workday_friday","Saturday":"workday_saturday","Sunday":"workday_sunday","Breaktime":"breaktime","Break Type (Flexible/Fixed)":"breaktype","No. of hours":"numberofhours","No. of breaks":"numberofbreaks","From":"breakfrom","To":"breakto","Departments":"departments","Locations":"locations"};
               const datas = results?.data;
               for (const data of datas) {
                 const newData: any = {};
@@ -120,27 +99,30 @@ export default function Upload({ isOpen, onClose, fields, module }: UploadCSVPro
                   newData[headerKeys[key]] = data[key];
                 }
                 newData.is_import = true;
-                newData.source_module = 'import_schedule';
+                newData.source_module = "import_schedule";
                 newData.allow_changes = false;
                 newData.complete = true;
-                console.log('Schedule data to be uploaded:', newData);
-                mutate({ file: null, data: newData });
+                mutate({file: null, data: newData});
               }
             } else {
-              showToast('You cannot proceed due to incomplete fields on your file. Please review.', 'error');
+              showToast(
+                "You cannot proceed due to incomplete fields on your file. Please review.",
+                "error"
+              );
             }
           },
           error: function (error: any) {
             console.error(error);
-            showToast(error, 'error');
+            showToast(error, "error");
           },
         });
       } else {
         Papa.parse(file, {
           complete: function (results: any) {
             const dataFields = results?.data[0];
-            const isCorrect = JSON.stringify(dataFields) === JSON.stringify(fields);
-
+            const isCorrect =
+              JSON.stringify(dataFields) === JSON.stringify(fields);
+  
             if (isCorrect) {
               const newData = results?.data
                 ?.slice(1)
@@ -149,92 +131,68 @@ export default function Upload({ isOpen, onClose, fields, module }: UploadCSVPro
                   fields.forEach((field: any, i: any) => {
                     type[field] = row[i];
                   });
-
+  
                   const obj: fieldObj = {};
+                  let hasEmptyTimeField = false;
                   fields.forEach((field: any) => {
                     const value = type[field];
-                    const lowerCaseField = field.toLowerCase();
-
-                    if (lowerCaseField === 'flexible time' && typeof value === 'string') {
-                      obj[lowerCaseField] = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  
+                    if (field === "Flexible Time" && typeof value === "string") {
+                      obj[field] = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
                     } else {
-                      obj[lowerCaseField] = value;
+                      obj[field] = value;
                     }
                   });
-
+  
                   const isEmpty = Object.values(obj).every(
-                    (value) => value === null || value === '' || value === undefined
+                    (value) =>
+                      value === null || value === "" || value === undefined
                   );
                   return isEmpty ? null : obj;
                 })
                 .filter(Boolean);
-
-              const structuredData = {
-                location: newData.map((data: any) => data.location),
-                department: newData.map((data: any) => data.department),
-                position: newData.map((data: any) => data.position),
-                employment_type: newData.map((data: any) => data['employment type']),
-              };
-
-              if (module === 'location') {
-                const capitalizeFirstLetter = (str: string) => {
-                  if (typeof str === 'string') {
-                    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-                  }
-                  return str;
-                };
-
-                const filteredData = {
-                  location: structuredData.location
-                    .filter((value: any) => value !== '')
-                    .map((value: any) => ({ name: capitalizeFirstLetter(value) })),
-                  department: structuredData.department
-                    .filter((value: any) => value !== '')
-                    .map((value: any) => ({ name: capitalizeFirstLetter(value) })),
-                  position: structuredData.position
-                    .filter((value: any) => value !== '')
-                    .map((value: any) => ({ name: capitalizeFirstLetter(value) })),
-                  employment_type: structuredData.employment_type
-                    .filter((value: any) => value !== '')
-                    .map((value: any) => ({ name: capitalizeFirstLetter(value) })),
-                };
-
-                console.log('Parsed file new data for location:', filteredData);
-
-                if (newData.length > 0 && Object.keys(newData[0]).length > 0) {
-                  const newHeaderFields = selfServiceHeaderFields[step];
-                  const newDataArray = newData.map((obj: any) => Object.values(obj));
-                  const modifiedData: any = [newHeaderFields, ...newDataArray];
-                  const csvData = Papa.unparse(modifiedData);
-                  const csvBlob = new Blob([csvData], { type: 'text/csv' });
-                  const csvFile = new File([csvBlob], 'modified.csv');
-                  mutate({ file: csvFile, data: filteredData });
-                } else {
-                  showToast('Invalid values. Please review.', 'error');
-                }
+  
+              if (newData.length > 0 && Object.keys(newData[0]).length > 0) {
+                const newHeaderFields = selfServiceHeaderFields[step];
+                const newDataArray = newData.map((obj: any) =>
+                  Object.values(obj)
+                );
+                const modifiedData: any = [newHeaderFields, ...newDataArray];
+                const csvData = Papa.unparse(modifiedData);
+                  const csvBlob = new Blob([csvData], { type: "text/csv" });
+                  const csvFile = new File([csvBlob], "modified.csv");
+                  mutate({file: csvFile, data: null});
               } else {
-                console.log('Parsed file new data:', newData);
-                if (newData.length > 0 && Object.keys(newData[0]).length > 0) {
-                  const newHeaderFields = selfServiceHeaderFields[step];
-                  const newDataArray = newData.map((obj: any) => Object.values(obj));
-                  const modifiedData: any = [newHeaderFields, ...newDataArray];
-                  const csvData = Papa.unparse(modifiedData);
-                  const csvBlob = new Blob([csvData], { type: 'text/csv' });
-                  const csvFile = new File([csvBlob], 'modified.csv');
-                  mutate({ file: csvFile, data: null });
-                } else {
-                  showToast('Invalid values. Please review.', 'error');
-                }
+                showToast("Invalid values. Please review.", "error");
               }
             } else {
-              showToast('You cannot proceed due to incomplete fields on your file. Please review.', 'error');
+              showToast(
+                "You cannot proceed due to incomplete fields on your file. Please review.",
+                "error"
+              );
             }
           },
           error: function (error: any) {
             console.error(error);
-            showToast(error, 'error');
+            showToast(error, "error");
           },
         });
+      }
+    };
+
+    const convertTimeFormat = (timeStr: string) => {
+      // Check if the time string is in HH:MM:SS format
+      if (timeStr.length === 8) {
+        // Format HH:MM:SS
+        return timeStr; // Already in the correct format
+      } else if (timeStr.length === 5) {
+        // Format HH:MM
+        return timeStr + ":00"; // Convert to HH:MM:SS
+      } else if (timeStr.length === 2) {
+        // Format HH
+        return timeStr + ":00:00"; // Convert to HH:MM:SS
+      } else {
+        throw new Error(`Invalid time format: ${timeStr}`);
       }
     };
 

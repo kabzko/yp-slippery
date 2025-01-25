@@ -136,7 +136,7 @@ const SubUnits = () => {
 
   return (
     <>
-      <Upload fields={['Name']} isOpen={openUploadModal} onClose={closeUpload} module='subunit' />
+      <Upload fields={['SubUnits']} isOpen={openUploadModal} onClose={closeUpload} module='subunit' />
       <CreateSubUnitModal isOpen={isModalOpen} onClose={closeModal} />
       <EditSubUnitModal subUnit={selectedSubUnit} isOpen={editModal} onClose={closeEditModal} />
       <DeleteModal subUnit={selectedSubUnit} isOpen={deleteModal} onClose={closeDeleteModal} />

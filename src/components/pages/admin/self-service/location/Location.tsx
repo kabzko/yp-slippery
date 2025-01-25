@@ -385,12 +385,13 @@ export default function Location() {
                   <>
                     {sortedLocationData?.map((location: any, rowIndex: number) => (
                       <tr key={location.id} className='h-12 p-4 border-b border-blue-gray-50 text-center'>
-                        <td className='py-1 cursor-pointer' onClick={() => handleCellClick(location.id)}>
-                          <span className='inline-block py-1 px-6 rounded-md hover:bg-gray-200'>{location.name}</span>
-                        </td>
-                        {selectedCell === location.id && (
-                          <td className='py-1'>
-                            <div className='flex justify-center space-x-2'>
+                        <td className='py-1 cursor-pointer'>
+                          <div className='flex justify-center' onMouseLeave={() => setSelectedCell(null)}>
+                            <div className='inline-block py-1 px-6 rounded-md hover:bg-gray-200' onMouseOver={() => handleCellClick(location.id)}>{location.name}</div>
+                            <div
+                              className='flex justify-center space-x-2 ml-2'
+                              style={{ visibility: selectedCell === location.id ? 'visible' : 'hidden' }}
+                            >
                               <button
                                 id='editbtn'
                                 onClick={openEditModal}
@@ -406,8 +407,8 @@ export default function Location() {
                                 <FaTrash size={17} />
                               </button>
                             </div>
-                          </td>
-                        )}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                     {/* Add empty rows to maintain consistent height */}
@@ -463,12 +464,13 @@ export default function Location() {
                   <>
                     {sortedDepartmentData?.map((department: any, rowIndex: number) => (
                       <tr key={department.id} className='h-12 p-4 border-b border-blue-gray-50 text-center'>
-                        <td className='py-1 cursor-pointer' onClick={() => handleCellClick(department.id)}>
-                          <span className='inline-block py-1 px-6 rounded-md hover:bg-gray-200'>{department.name}</span>
-                        </td>
-                        {selectedCell === department.id && (
-                          <td className='py-1'>
-                            <div className='flex justify-center space-x-2'>
+                        <td className='py-1 cursor-pointer'>
+                          <div className='flex justify-center' onMouseLeave={() => setSelectedCell(null)}>
+                            <div className='inline-block py-1 px-6 rounded-md hover:bg-gray-200' onMouseOver={() => handleCellClick(department.id)}>{department.name}</div>
+                            <div
+                              className='flex justify-center space-x-2 ml-2'
+                              style={{ visibility: selectedCell === department.id ? 'visible' : 'hidden' }}
+                            >
                               <button
                                 id='editbtn'
                                 onClick={openEditModal}
@@ -484,8 +486,8 @@ export default function Location() {
                                 <FaTrash size={17} />
                               </button>
                             </div>
-                          </td>
-                        )}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                     {/* Add empty rows to maintain consistent height */}
@@ -541,12 +543,13 @@ export default function Location() {
                   <>
                     {sortedPositionData?.map((position: any, rowIndex: number) => (
                       <tr key={position.id} className='h-12 p-4 border-b border-blue-gray-50 text-center'>
-                        <td className='py-1 cursor-pointer' onClick={() => handleCellClick(position.id)}>
-                          <span className='inline-block py-1 px-6 rounded-md hover:bg-gray-200'>{position.name}</span>
-                        </td>
-                        {selectedCell === position.id && (
-                          <td className='py-1'>
-                            <div className='flex justify-center space-x-2'>
+                        <td className='py-1 cursor-pointer'>
+                          <div className='flex justify-center' onMouseLeave={() => setSelectedCell(null)}>
+                            <div className='inline-block py-1 px-6 rounded-md hover:bg-gray-200' onMouseOver={() => handleCellClick(position.id)}>{position.name}</div>
+                            <div
+                              className='flex justify-center space-x-2 ml-2'
+                              style={{ visibility: selectedCell === position.id ? 'visible' : 'hidden' }}
+                            >
                               <button
                                 id='editbtn'
                                 onClick={openEditModal}
@@ -562,8 +565,8 @@ export default function Location() {
                                 <FaTrash size={17} />
                               </button>
                             </div>
-                          </td>
-                        )}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                     {/* Add empty rows to maintain consistent height */}
@@ -619,14 +622,13 @@ export default function Location() {
                   <>
                     {sortedEmployementTypeData?.map((employmenttype: any, rowIndex: number) => (
                       <tr key={employmenttype.id} className='h-12 p-4 border-b border-blue-gray-50 text-center'>
-                        <td className='py-1 cursor-pointer' onClick={() => handleCellClick(employmenttype.id)}>
-                          <span className='inline-block py-1 px-6 rounded-md hover:bg-gray-200'>
-                            {employmenttype.name}
-                          </span>
-                        </td>
-                        {selectedCell === employmenttype.id && (
-                          <td className='py-1'>
-                            <div className='flex justify-center space-x-2'>
+                        <td className='py-1 cursor-pointer'>
+                          <div className='flex justify-center' onMouseLeave={() => setSelectedCell(null)}>
+                            <div className='inline-block py-1 px-6 rounded-md hover:bg-gray-200' onMouseOver={() => handleCellClick(employmenttype.id)}>{employmenttype.name}</div>
+                            <div
+                              className='flex justify-center space-x-2 ml-2'
+                              style={{ visibility: selectedCell === employmenttype.id ? 'visible' : 'hidden' }}
+                            >
                               <button
                                 id='editbtn'
                                 onClick={openEditModal}
@@ -642,8 +644,8 @@ export default function Location() {
                                 <FaTrash size={17} />
                               </button>
                             </div>
-                          </td>
-                        )}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                     {/* Add empty rows to maintain consistent height */}

@@ -30,7 +30,7 @@ const SignUpWithModal: FC<ModalProps> = ({ isOpen, onClose }: any) => {
       });
     }
     if (selectedOption === 'Company' && !selectedProvider) {
-      location.href = `/next/register/company`;
+      location.href = `/register/company`;
     }
     if (selectedOption === 'Company' && selectedProvider === 'Google') {
       signInWithGoogle();
@@ -48,7 +48,7 @@ const SignUpWithModal: FC<ModalProps> = ({ isOpen, onClose }: any) => {
     const left = (window.innerWidth - 600) / 2;
     const top = (window.innerHeight - 400) / 2;
     const popup: any = window.open(
-      `${process.env.NEXT_PUBLIC_API_URL}/sso/login/google-oauth`,
+      `/sso/login/google-oauth`,
       'popup',
       `width=600, height=400, left=${left}, top=${top}`
     );
@@ -63,7 +63,7 @@ const SignUpWithModal: FC<ModalProps> = ({ isOpen, onClose }: any) => {
     const left = (window.innerWidth - 600) / 2;
     const top = (window.innerHeight - 400) / 2;
     const popup: any = window.open(
-      `${process.env.NEXT_PUBLIC_API_URL}/sso/login/facebook-oauth`,
+      `/sso/login/facebook-oauth`,
       'popup',
       `width=600, height=400, left=${left}, top=${top}`
     );

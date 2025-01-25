@@ -124,7 +124,7 @@ const Section = () => {
 
   return (
     <>
-      <Upload fields={['Name']} isOpen={openUploadModal} onClose={closeUpload} module='section' />
+      <Upload fields={['Sections']} isOpen={openUploadModal} onClose={closeUpload} module='section' />
       <CreateSectionModal isOpen={isModalOpen} onClose={closeModal} />
       <EditSectionModal section={selectedSection} isOpen={editModal} onClose={closeEditModal} />
       <DeleteModal section={selectedSection} isOpen={deleteModal} onClose={closeDeleteModal} />

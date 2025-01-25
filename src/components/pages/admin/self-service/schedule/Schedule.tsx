@@ -130,7 +130,7 @@ const Schedule = () => {
     const newSelectedData = temp?.map((item: any) => ({
       id: item.id,
       dataSource: 'schedule',
-      value: item.old_name,
+      value: item.name,
     }));
     console.log('Selected Schedule Data:', newSelectedData);
     setSelectedSched(newSelectedData);
@@ -285,7 +285,7 @@ const Schedule = () => {
                   <th scope='col' className='px-3 py-3.5'>
                     <div className='flex justify-center items-center'>
                       <h1 className='text-black'>Schedule Code</h1>
-                      <button disabled={schedulesDatas?.schedule?.length === 0} onClick={() => handleSort('old_name')}>
+                      <button disabled={schedulesDatas?.schedule?.length === 0} onClick={() => handleSort('name')}>
                         <svg
                           className='w-3 h-3 ms-1.5 text-blue-600'
                           aria-hidden='true'
@@ -357,7 +357,7 @@ const Schedule = () => {
                           }}
                         />
                       </td>
-                      <td className='py-1'>{schedule.old_name}</td>
+                      <td className='py-1'>{schedule.name}</td>
                       <td className='py-1'>{schedule.timein}</td>
                       <td className='py-1'>{schedule.timeout}</td>
                       <td className='py-1'>
@@ -391,7 +391,7 @@ const Schedule = () => {
                               setSelectedSched({
                                 id: schedule.id,
                                 dataSource: 'schedule',
-                                value: schedule.old_name,
+                                value: schedule.name,
                               });
                               setSelectedRows([schedule.id]);
                               openDeleteModal();

@@ -6,6 +6,7 @@ const fetchTimeData = async () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
       },
     };
     const response = await fetch('/get_current_time/', config);

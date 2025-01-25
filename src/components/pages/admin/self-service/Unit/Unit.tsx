@@ -134,7 +134,7 @@ const Unit = () => {
 
   return (
     <>
-      <Upload fields={['Name']} isOpen={openUploadModal} onClose={closeUpload} module='unit' />
+      <Upload fields={['Units']} isOpen={openUploadModal} onClose={closeUpload} module='unit' />
       <CreateUnitModal isOpen={isModalOpen} onClose={closeModal} />
       <EditUnitModal unit={selectedUnit} isOpen={editModal} onClose={closeEditModal} />
       <DeleteModal unit={selectedUnit} isOpen={deleteModal} onClose={closeDeleteModal} />

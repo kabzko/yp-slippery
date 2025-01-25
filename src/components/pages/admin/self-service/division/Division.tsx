@@ -118,7 +118,7 @@ const Division = () => {
 
   return (
     <>
-      <Upload fields={['Name']} isOpen={openUploadModal} onClose={closeUpload} module='division' />
+      <Upload fields={['Divisions']} isOpen={openUploadModal} onClose={closeUpload} module='division' />
       <CreateDivisionModal isOpen={isModalOpen} onClose={closeModal} />
       <EditDivisionModal division={selectedDivision} isOpen={editModal} onClose={closeEditModal} />
       <DeleteModal division={selectedDivision} isOpen={deleteModal} onClose={closeDeleteModal} />

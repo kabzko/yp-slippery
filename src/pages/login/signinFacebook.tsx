@@ -5,7 +5,7 @@ const SignInWithFacebookButton = () => {
     const left = (window.innerWidth - 600) / 2;
     const top = (window.innerHeight - 400) / 2;
     const popup: any = window.open(
-      `${process.env.NEXT_PUBLIC_API_URL}/sso/login/facebook-oauth`,
+      `/sso/login/facebook-oauth`,
       'popup',
       `width=600, height=400, left=${left}, top=${top}`
     );

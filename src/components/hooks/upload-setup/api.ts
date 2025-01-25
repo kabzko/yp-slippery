@@ -8,7 +8,6 @@ export const uploadSetupData = async (file: File | null, url: string) => {
       method: 'POST',
       headers: {
         'X-CSRFToken': (document.getElementsByName('csrfmiddlewaretoken')[0] as HTMLInputElement)?.defaultValue,
-        'Content-Type': 'multipart/form-data',
       },
       body: formData,
     };
