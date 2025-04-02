@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
 const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
@@ -14,6 +14,7 @@ function App() {
     <Router>
       <Suspense>
         <Routes>
+          <Route path="/" element={<Navigate replace to="/employee-registration" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           {/* <Route path="/industry" element={<Industry />} /> */}
           <Route path="/employee-registration" element={<EmployeeRegistration />} />
