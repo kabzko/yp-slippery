@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           {/* <Route path="/industry" element={<Industry />} /> */}
-          <Route path="/" element={<EmployeeRegistration />} />
+          <Route path="/employee-registration" element={<EmployeeRegistration />} />
           <Route path="/timekeeper" element={<Timekeeper />} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/company-policy" element={<CompanyPolicy />} />
