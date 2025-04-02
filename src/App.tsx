@@ -15,12 +15,12 @@ function App() {
       <Suspense>
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/industry" element={<Industry />} />
-          <Route path="/employee-registration" element={<EmployeeRegistration />} />
+          {/* <Route path="/industry" element={<Industry />} /> */}
+          <Route path="/" element={<EmployeeRegistration />} />
           <Route path="/timekeeper" element={<Timekeeper />} />
           <Route path="/payroll" element={<Payroll />} />
           <Route path="/company-policy" element={<CompanyPolicy />} />
-          <Route path="/self-service" element={<SelfService/>} />
+          {/* <Route path="/self-service" element={<SelfService/>} /> */}
         </Routes>
       </Suspense>
     </Router>
